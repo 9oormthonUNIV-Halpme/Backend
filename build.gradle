@@ -26,10 +26,6 @@ repositories {
 dependencies {
 
 	// JPA
-	// implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-	// MySQL
-	// implementation 'mysql:mysql-connector-java:8.0.33'
 
 	// Spring Web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
