@@ -11,14 +11,17 @@ permissions:
   contents: read
 
 jobs:
+  # EC2에 최신 이미지 Pulling 후 실행
   deploy-to-ec2:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: self-hosted
 
     steps:
+      # 1. latest 버전의 이미지 Pulling
       - name: Pull Latest Docker Image
         run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/halpme_cicd_action:latest
 
+      # 2. 기존 컨테이너 중지 후 삭제
       - name: Stop and Remove Old Container
         run: |
           if [ "$(docker ps -q -f name=halpme)" ]; then
@@ -26,9 +29,11 @@ jobs:
             sudo docker rm halpme
           fi
 
+      # 3. 새 컨테이너 실행
       - name: Run New Container
         run: |
           sudo docker run --name halpme --rm -d -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/halpme_cicd_action:latest
 
+      # 4. 미사용 이미지 정리
       - name: Prune Unused Docker Images
         run: sudo docker system prune -f

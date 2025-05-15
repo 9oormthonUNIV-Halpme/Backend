@@ -24,7 +24,11 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # 2. Gradle 의존성 캐싱
+      # 2. gradlew 실행 권한 부여
+      - name: Set execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      # 3. Gradle 의존성 캐싱
       - name: Dependency Caching
         uses: actions/cache@v3
         with:
@@ -36,7 +40,7 @@ jobs:
           restore-keys:
             ${{ runner.os }}-gradle-
 
-      # 3. application.yml 생성
+      # 4. application.yml 생성
       - name: Create application.yml
         run: |
           mkdir -p src/main/resources
@@ -47,36 +51,36 @@ jobs:
 #          echo "${{ secrets.APPLICATION_OAUTH2_YML }}" > src/main/resources/application-oauth.yml
 #          echo "${{ secrets.APPLICATION_AWS_YML }}" > src/main/resources/application-aws.yml
 
-      # 4. Gradle 설정
+      # 5. Gradle 설정
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
         with:
           cache-read-only: false
 
-      # 5. Spring Boot Application 빌드
+      # 6. Spring Boot Application 빌드
       - name: Build with Gradle
         run: ./gradlew clean bootJar
 
-      # 6. Docker 이미지 빌드
+      # 7. Docker 이미지 빌드
       - name: Docker image build
         run: docker build \
           --label commit=${{ github.sha }} \
           -t ${{ secrets.DOCKERHUB_USERNAME }}/halpme_cicd_action:${{ github.sha }} .
 
-      # 7. 이미지 태깅
+      # 8. 이미지 태깅
       - name: Tag Latest Image
         run : |
           docker tag ${{ secrets.DOCKERHUB_USERNAME }}/halpme_cicd_action:${{ github.sha }} \
           ${{ secrets.DOCKERHUB_USERNAME }}/halpme_cicd_action:latest
 
-      # 8. DockerHub 로그인
+      # 9. DockerHub 로그인
       - name: Docker login
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      # 9. Docker Hub에 이미지 Push
+      # 10. Docker Hub에 이미지 Push
       - name: Docker Hub push
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/halpme_cicd_action:${{ github.sha }}
