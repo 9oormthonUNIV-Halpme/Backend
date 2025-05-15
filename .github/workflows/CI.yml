@@ -59,7 +59,9 @@ jobs:
 
       # 6. Spring Boot Application 빌드
       - name: Build with Gradle
-        run: ./gradlew clean bootJar
+        run: |
+          ./gradlew clean bootJar
+          ls -l build/libs/
 
       # 7. Docker 이미지 빌드
       - name: Docker image build

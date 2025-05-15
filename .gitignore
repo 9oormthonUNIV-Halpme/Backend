@@ -1,7 +1,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/java,intellij+all,git,windows,gradle
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,intellij+all,git,windows,gradle
 
-# *.yml
+*.yml
+.idea
 
 ### Git ###
 # Created by git for backups. To disable backups in Git:

@@ -10,9 +10,9 @@ LABEL maintainer="wien0128" \
 ENV TZ=Asia/Seoul
 
 # JAR 파일 경로
-ARG JAR_FILE=build/libs/halpme-0.0.1-SNAPSOHT.jar
+ARG JAR_FILE=build/libs/halpme-0.0.1-SNAPSHOT.jar
 # 컨테이너 내부로 JAR 복사
-COPY ${JAR_FILE} halpme_backend.jar
+ADD ${JAR_FILE} halpme_backend.jar
 
 # 컨테이너 초기화 스크립트
 ENTRYPOINT [ \
