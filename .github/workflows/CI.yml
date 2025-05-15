@@ -63,9 +63,11 @@ jobs:
 
       # 7. Docker 이미지 빌드
       - name: Docker image build
-        run: docker build \
+        run: |
+          docker build \
           --label commit=${{ github.sha }} \
-          -t ${{ secrets.DOCKERHUB_USERNAME }}/halpme_cicd_action:${{ github.sha }} .
+          -t ${{ secrets.DOCKERHUB_USERNAME }}/halpme_cicd_action:${{ github.sha }} \
+          .
 
       # 8. 이미지 태깅
       - name: Tag Latest Image
