@@ -25,8 +25,7 @@ jobs:
       - name: Stop and Remove Old Container
         run: |
           if [ "$(docker ps -aq -f name=halpme)" ]; then
-            sudo docker stop halpme || true
-            sudo docker rm halpme || true
+            sudo docker rm -f halpme || true
           fi
 
       # 3. 새 컨테이너 실행
