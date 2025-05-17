@@ -1,5 +1,7 @@
 package com.core.halpme.domain;
 
+import com.core.halpme.api.members.entity.Address;
+import com.core.halpme.api.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

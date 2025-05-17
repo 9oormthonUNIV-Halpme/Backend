@@ -1,4 +1,4 @@
-package com.core.halpme.domain;
+package com.core.halpme.api.members.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

@@ -1,5 +1,6 @@
-package com.core.halpme.domain;
+package com.core.halpme.api.post.entity;
 
+import com.core.halpme.api.members.entity.Address;
 import com.core.halpme.domain.Requester;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -30,9 +31,5 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requester_id")
     private Requester requester;
-
-
-
-
 
 }

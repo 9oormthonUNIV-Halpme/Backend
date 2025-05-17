@@ -1,5 +1,6 @@
 package com.core.halpme.domain;
 
+import com.core.halpme.api.members.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,7 +27,5 @@ public class VolunteerCertification {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
-
 
 }
