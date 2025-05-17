@@ -2,7 +2,7 @@ package com.core.halpme.api.members.controller;
 
 import com.core.halpme.api.members.dto.LoginRequest;
 import com.core.halpme.api.members.dto.RegisterRequest;
-import com.core.halpme.api.members.service.UserService;
+import com.core.halpme.api.members.service.MemberService;
 import com.core.halpme.common.response.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final UserService userService;
+    private final MemberService memberService;
 
     // 회원가입
     @Operation(summary = "회원가입", description = "회원가입")
@@ -27,7 +27,7 @@ public class AuthController {
     })
     @PostMapping("/signup")
     public ResponseEntity<com.core.halpme.common.response.ApiResponse<Void>> signup(@RequestBody RegisterRequest request) {
-        userService.signup(request);
+        memberService.signup(request);
         return com.core.halpme.common.response.ApiResponse.successOnly(SuccessStatus.USER_SIGNUP_SUCCESS);
     }
 
@@ -41,7 +41,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<com.core.halpme.common.response.ApiResponse<String>> login(@RequestBody LoginRequest request) {
-        String token = userService.login(request);
+        String token = memberService.login(request);
         return com.core.halpme.common.response.ApiResponse.success(SuccessStatus.LOGIN_SUCCESS, token);
     }
 

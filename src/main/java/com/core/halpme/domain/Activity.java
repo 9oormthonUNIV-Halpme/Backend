@@ -1,6 +1,6 @@
 package com.core.halpme.domain;
 
-import com.core.halpme.api.members.entity.User;
+import com.core.halpme.api.members.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -23,7 +23,7 @@ public class Activity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private Member member;
 
     @OneToOne(mappedBy = "activity", cascade = CascadeType.ALL)
     private VolunteerCertification volunteerCertification;
