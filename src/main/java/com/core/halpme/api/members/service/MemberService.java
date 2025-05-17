@@ -55,7 +55,7 @@ public class MemberService {
                 .age(request.getAge())
                 .specialNote(request.getSpecialNote())
                 .gender(request.getGender())
-                .userType(request.getUserType())
+                .memberType(request.getMemberType())
                 .address(address)
                 .build();
 

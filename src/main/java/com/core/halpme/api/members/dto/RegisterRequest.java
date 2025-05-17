@@ -14,7 +14,7 @@ public class RegisterRequest {
     private int age;
     private Member.Gender gender; // User.Gender 타입
     private String specialNote;
-    private Member.UserType userType; // User.UserType 타입
+    private Member.MemberType memberType; // User.UserType 타입
     private String addressDetail;
     private String city;
     private String district;

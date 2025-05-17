@@ -27,7 +27,7 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Gender gender;
     @Enumerated(EnumType.STRING)
-    private UserType userType;
+    private MemberType memberType;
     @Embedded
     private Address address;
 
@@ -38,7 +38,7 @@ public class Member extends BaseTimeEntity {
         MALE, FEMALE
     }
 
-    public enum UserType {
+    public enum MemberType {
         Elderly, Guardian
     }
 }
