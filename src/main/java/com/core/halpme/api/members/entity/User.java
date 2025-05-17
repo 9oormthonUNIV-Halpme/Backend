@@ -22,6 +22,7 @@ public class User extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
+
     private String name;
     private String password;
     private String email;
@@ -29,11 +30,11 @@ public class User extends BaseTimeEntity {
     private int age;
     private enum gender{MALE,FEMALE};
     private String specialNote;
-    private enum UserType{Elderly, Guardian}
+    private enum UserType{Elderly, Guardian, Volunteer}
 
     @Embedded
     private Address address;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 }
