@@ -16,6 +16,7 @@ public class RegisterRequest {
     private String specialNote;
     private Member.UserType userType; // User.UserType 타입
     private String addressDetail;
-    private double latitute;
-    private double longitude;
+    private String city;
+    private String district;
+    private String dong;
 }

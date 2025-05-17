@@ -43,8 +43,9 @@ public class MemberService {
 
         Address address = new Address();
         address.setAddressDetail(request.getAddressDetail());
-        address.setLatitude(request.getLatitute());
-        address.setLongitude(request.getLongitude());
+        address.setCity(request.getCity());
+        address.setDistrict(request.getDistrict());
+        address.setDong(request.getDong());
 
         Member member = Member.builder()
                 .username(request.getUsername())
