@@ -6,7 +6,10 @@ import com.core.halpme.api.members.entity.Address;
 import com.core.halpme.api.members.entity.User;
 import com.core.halpme.api.members.jwt.JwtTokenProvider;
 import com.core.halpme.api.members.repository.UserRepository;
+import com.core.halpme.common.exception.BaseException;
+import com.core.halpme.common.response.ErrorStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +25,22 @@ public class UserService {
 
 
     public void signup(RegisterRequest request) {
+
+        // 이메일 중복 검사
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("이미 존재하는 사용자입니다.");
+            throw new BaseException(ErrorStatus.BAD_REQUEST_DUPLICATE_EMAIL.getHttpStatus(),
+                    ErrorStatus.BAD_REQUEST_DUPLICATE_EMAIL.getMessage());
+        }
+
+        // 닉네임 중복 검사
+        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+            throw new BaseException(ErrorStatus.BAD_REQUEST_DUPLICATE_NICKNAME.getHttpStatus(),
+                    ErrorStatus.BAD_REQUEST_DUPLICATE_NICKNAME.getMessage());
+        }
+
+        // 전화번호 중복 검사
+        if (userRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
+            throw new BaseException(HttpStatus.BAD_REQUEST,ErrorStatus.BAD_REQUEST_DUPLICATE_PHONE.getMessage() );
         }
 
         Address address = new Address();
@@ -49,14 +66,22 @@ public class UserService {
     public String login(LoginRequest request) {
         // id = email, pw = password
 
+        // 이메일 검증
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("사용자 없음"));
+                .orElseThrow(() -> new BaseException(
+                        ErrorStatus.BAD_REQUEST_INVALID_EMAIL.getHttpStatus(),
+                        ErrorStatus.BAD_REQUEST_INVALID_EMAIL.getMessage()
+                ));
 
+        // 비밀번호 검증
         if (!passwordEncoder.matches(request.getPw(), user.getPassword())) {
-            throw new RuntimeException("비밀번호 불일치");
+            throw new BaseException(
+                    ErrorStatus.BAD_REQUEST_INVALID_PASSWORD.getHttpStatus(),
+                    ErrorStatus.BAD_REQUEST_INVALID_PASSWORD.getMessage()
+            );
         }
 
-        return jwtTokenProvider.generateToken(user.getEmail()); // 또는 user.getId() 등
+        return jwtTokenProvider.generateToken(user.getEmail());
     }
 
 }
