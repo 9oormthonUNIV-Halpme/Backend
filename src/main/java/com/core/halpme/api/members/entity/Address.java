@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Address {
     private String addressDetail;
-    private double latitute;
-    private double longitude;
+    private String city; // 시
+    private String district; // 구
+    private String dong; // 동
 }
