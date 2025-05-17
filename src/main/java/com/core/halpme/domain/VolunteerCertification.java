@@ -1,5 +1,6 @@
 package com.core.halpme.domain;
 
+import com.core.halpme.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
