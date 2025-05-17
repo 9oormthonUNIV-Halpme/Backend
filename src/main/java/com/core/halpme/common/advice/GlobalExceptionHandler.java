@@ -3,6 +3,7 @@ package com.core.halpme.common.advice;
 import com.core.halpme.common.exception.BaseException;
 import com.core.halpme.common.response.ApiResponse;
 import com.core.halpme.common.response.ErrorStatus;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.stream.Collectors;
 
-// @Hidden // @RestControllerAdvice-Swagger 충돌 방지
+@Hidden
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

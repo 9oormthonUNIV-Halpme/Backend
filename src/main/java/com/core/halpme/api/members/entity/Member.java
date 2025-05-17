@@ -2,39 +2,43 @@ package com.core.halpme.api.members.entity;
 
 import com.core.halpme.api.post.entity.Post;
 import com.core.halpme.common.entity.BaseTimeEntity;
-import com.core.halpme.domain.Activity;
-import com.core.halpme.domain.VolunteerCertification;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends BaseTimeEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Long id;
+public class Member extends BaseTimeEntity {
 
-    private String name;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_id")
+    private Long id;
+    private String username;
     private String password;
     private String email;
     private String phoneNumber;
     private int age;
-    private enum gender{MALE,FEMALE};
     private String specialNote;
-    private enum UserType{Elderly, Guardian, Volunteer}
-
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+    @Enumerated(EnumType.STRING)
+    private MemberType memberType;
     @Embedded
     private Address address;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany
     private List<Post> posts = new ArrayList<>();
+
+    public enum Gender {
+        MALE, FEMALE
+    }
+
+    public enum MemberType {
+        Elderly, Guardian
+    }
 }

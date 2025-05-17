@@ -1,9 +1,8 @@
 package com.core.halpme.api.post.entity;
 
 import com.core.halpme.api.members.entity.Address;
-import com.core.halpme.api.members.entity.User;
+import com.core.halpme.api.members.entity.Member;
 import com.core.halpme.common.entity.BaseTimeEntity;
-import com.core.halpme.domain.Requester;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,6 +34,6 @@ public class Post extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private Member member;
 
 }

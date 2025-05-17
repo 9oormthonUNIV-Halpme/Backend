@@ -19,6 +19,8 @@ public enum SuccessStatus {
     CURRENT_MEMBER_GET_SUCCESS(HttpStatus.OK, "현재 사용자 정보 조회 성공"),
     ARTICLE_GET_SUCCESS(HttpStatus.OK,"게시글 조회 성공"),
     ARTICLE_UPDATE_SUCCESS(HttpStatus.OK,"게시글 수정 성공"),
+    USER_SIGNUP_SUCCESS(HttpStatus.OK,"회원가입 성공"),
+    AUTH_SUCCESS(HttpStatus.OK, "인증에 성공했습니다!"),
 
     /**
      * 201 CREATED
