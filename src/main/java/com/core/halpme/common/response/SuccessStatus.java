@@ -26,7 +26,6 @@ public enum SuccessStatus {
      * 201 CREATED
      */
     ARTICLE_CREATE_SUCCESS(HttpStatus.CREATED, "게시판 등록 성공"),
-    SIGNUP_SUCCESS(HttpStatus.CREATED, "회원가입 성공"),
 
     /**
      * 204 NO CONTENT
