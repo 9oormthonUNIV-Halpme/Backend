@@ -30,12 +30,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 토큰이 존재하고, 유효하다면
         if (token != null && jwtTokenProvider.validateToken(token)) {
-            // 토큰에서 사용자 이름(username)을 추출
-            String username = jwtTokenProvider.getUsername(token);
+            // 토큰에서 사용자 이름(email)을 추출
+            String email = jwtTokenProvider.getEmail(token);
 
             // 인증 객체 생성 (비밀번호와 권한 정보는 비워둠)
             UsernamePasswordAuthenticationToken auth =
-                    new UsernamePasswordAuthenticationToken(username, null, List.of());
+                    new UsernamePasswordAuthenticationToken(email, null, List.of());
 
             // SecurityContext에 인증 정보 저장
             SecurityContextHolder.getContext().setAuthentication(auth);
