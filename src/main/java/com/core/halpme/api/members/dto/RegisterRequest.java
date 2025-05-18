@@ -1,6 +1,7 @@
 package com.core.halpme.api.members.dto;
 
-import com.core.halpme.api.members.entity.Member;
+import com.core.halpme.api.members.entity.Gender;
+import com.core.halpme.api.members.entity.MemberType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,9 +13,9 @@ public class RegisterRequest {
     private String email;
     private String phoneNumber;
     private int age;
-    private Member.Gender gender; // User.Gender 타입
+    private Gender gender; // User.Gender 타입
     private String specialNote;
-    private Member.MemberType memberType; // User.UserType 타입
+    private MemberType memberType; // User.UserType 타입
     private String addressDetail;
     private String city;
     private String district;

@@ -4,6 +4,7 @@ import com.core.halpme.api.members.dto.LoginRequest;
 import com.core.halpme.api.members.dto.RegisterRequest;
 import com.core.halpme.api.members.entity.Address;
 import com.core.halpme.api.members.entity.Member;
+import com.core.halpme.api.members.entity.Role;
 import com.core.halpme.api.members.jwt.JwtTokenProvider;
 import com.core.halpme.api.members.repository.MemberRepository;
 import com.core.halpme.common.exception.BaseException;
@@ -23,22 +24,18 @@ public class MemberService {
 
 
     public void signup(RegisterRequest request) {
-
-        // 이메일 중복 검사
         if (memberRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new BaseException(ErrorStatus.BAD_REQUEST_DUPLICATE_EMAIL.getHttpStatus(),
                     ErrorStatus.BAD_REQUEST_DUPLICATE_EMAIL.getMessage());
         }
 
-        // 닉네임 중복 검사
-        if (memberRepository.findByUsername(request.getUsername()).isPresent()) {
+        if (memberRepository.findByNickname(request.getUsername()).isPresent()) {
             throw new BaseException(ErrorStatus.BAD_REQUEST_DUPLICATE_NICKNAME.getHttpStatus(),
                     ErrorStatus.BAD_REQUEST_DUPLICATE_NICKNAME.getMessage());
         }
 
-        // 전화번호 중복 검사
         if (memberRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
-            throw new BaseException(HttpStatus.BAD_REQUEST,ErrorStatus.BAD_REQUEST_DUPLICATE_PHONE.getMessage() );
+            throw new BaseException(HttpStatus.BAD_REQUEST, ErrorStatus.BAD_REQUEST_DUPLICATE_PHONE.getMessage());
         }
 
         Address address = new Address();
@@ -48,14 +45,15 @@ public class MemberService {
         address.setDong(request.getDong());
 
         Member member = Member.builder()
-                .username(request.getUsername())
+                .nickname(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .phoneNumber(request.getPhoneNumber())
                 .age(request.getAge())
-                .specialNote(request.getSpecialNote())
+                .note(request.getSpecialNote())
                 .gender(request.getGender())
                 .memberType(request.getMemberType())
+                .role(Role.MEMBER)
                 .address(address)
                 .build();
 
