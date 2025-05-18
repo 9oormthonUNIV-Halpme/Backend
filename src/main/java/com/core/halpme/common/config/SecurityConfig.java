@@ -33,14 +33,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
+                .httpBasic(httpBasic -> httpBasic.disable())
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers
-                        .frameOptions(frame -> frame.disable()) // ✅ Deprecated 방식 대체
+                        .frameOptions(frame -> frame.disable())
                 )
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션을 사용하지 않도록 설정 (JWT는 무상태)
                 .authorizeHttpRequests(auth -> auth // 요청별 인증/인가 설정
-                        .requestMatchers("/api/v1/**").permitAll() // 회원가입, 로그인은 인증 없이 접근 가능
+                        .requestMatchers("/api/v1/login","/api/v1/signup").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers(
                                 "/",                  // 홈
