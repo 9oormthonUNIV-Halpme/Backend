@@ -13,6 +13,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -23,13 +27,14 @@ public class MemberService {
 
 
 
+    @Transactional
     public void signup(RegisterRequest request) {
         if (memberRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new BaseException(ErrorStatus.BAD_REQUEST_DUPLICATE_EMAIL.getHttpStatus(),
                     ErrorStatus.BAD_REQUEST_DUPLICATE_EMAIL.getMessage());
         }
 
-        if (memberRepository.findByNickname(request.getUsername()).isPresent()) {
+        if (memberRepository.findByNickname(request.getNickname()).isPresent()) {
             throw new BaseException(ErrorStatus.BAD_REQUEST_DUPLICATE_NICKNAME.getHttpStatus(),
                     ErrorStatus.BAD_REQUEST_DUPLICATE_NICKNAME.getMessage());
         }
@@ -45,7 +50,7 @@ public class MemberService {
         address.setDong(request.getDong());
 
         Member member = Member.builder()
-                .nickname(request.getUsername())
+                .nickname(request.getNickname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .phoneNumber(request.getPhoneNumber())
@@ -53,32 +58,32 @@ public class MemberService {
                 .note(request.getSpecialNote())
                 .gender(request.getGender())
                 .memberType(request.getMemberType())
-                .role(Role.MEMBER)
+                .role(request.getRole())
                 .address(address)
                 .build();
 
         memberRepository.save(member);
     }
 
-    public String login(LoginRequest request) {
+
+    @Transactional(readOnly = true)
+    public Map<String, Object> login(LoginRequest request) {
         // id = email, pw = password
 
-        // 이메일 검증
         Member member = memberRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new BaseException(
-                        ErrorStatus.BAD_REQUEST_INVALID_EMAIL.getHttpStatus(),
-                        ErrorStatus.BAD_REQUEST_INVALID_EMAIL.getMessage()
-                ));
+                .orElseThrow(() -> new IllegalArgumentException("이메일 혹은 비밀번호를 다시 확인하세요."));
 
-        // 비밀번호 검증
         if (!passwordEncoder.matches(request.getPw(), member.getPassword())) {
-            throw new BaseException(
-                    ErrorStatus.BAD_REQUEST_INVALID_PASSWORD.getHttpStatus(),
-                    ErrorStatus.BAD_REQUEST_INVALID_PASSWORD.getMessage()
-            );
+            throw new IllegalArgumentException("이메일 혹은 비밀번호를 다시 확인하세요.");
         }
 
-        return jwtTokenProvider.generateToken(member.getEmail());
+        String token = jwtTokenProvider.generateToken(member.getEmail(),member.getRole());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", token);
+        response.put("role", member.getRole());
+
+        return response;
     }
 
 }
