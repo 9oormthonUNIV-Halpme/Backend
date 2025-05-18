@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -30,12 +31,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 토큰이 존재하고, 유효하다면
         if (token != null && jwtTokenProvider.validateToken(token)) {
-            // 토큰에서 사용자 이름(email)을 추출
+            // 토큰에서 사용자 이메일 및 권한(role) 추출
             String email = jwtTokenProvider.getEmail(token);
+            String role = jwtTokenProvider.getRole(token);
 
-            // 인증 객체 생성 (비밀번호와 권한 정보는 비워둠)
+            // 권한 부여
+            SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role);
             UsernamePasswordAuthenticationToken auth =
-                    new UsernamePasswordAuthenticationToken(email, null, List.of());
+                    new UsernamePasswordAuthenticationToken(email, null, List.of(authority));
 
             // SecurityContext에 인증 정보 저장
             SecurityContextHolder.getContext().setAuthentication(auth);
