@@ -187,3 +187,7 @@ gradle-app.setting
 *.hprof
 
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij+all,git,windows,gradle
+
+# application 설정 파일 무시
+/src/main/resources/application.yml
+/src/main/resources/application-*.yml
