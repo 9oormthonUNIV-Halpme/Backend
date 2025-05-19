@@ -33,7 +33,7 @@ public class PostController {
         PostResponse response = postService.createPost(email, request);
 
         // 201 Created 상태 코드와 함께 응답 반환
-        return ApiResponse.successCreated(SuccessStatus.ARTICLE_CREATE_SUCCESS, response);  // PostResponse 반환
+        return ApiResponse.success(SuccessStatus.ARTICLE_CREATE_SUCCESS, response);  // PostResponse 반환
     }
 
     //시, 구, 동 기준으로 게시물 조회
