@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/chatRoom/")
+@RequestMapping("api/v1/chatRoom/")
 @Slf4j
 public class ChatRoomController {
 
