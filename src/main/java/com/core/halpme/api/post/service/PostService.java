@@ -31,7 +31,6 @@ public class PostService {
                 .orElseThrow(() -> new NotFoundException("해당 사람은 존재하지 않습니다."));
 
         Address address = Address.builder()
-                .addressDetail(request.getAddressDetail())
                 .city(request.getCity())
                 .district(request.getDistrict())
                 .dong(request.getDong())
@@ -57,7 +56,7 @@ public class PostService {
                 .orElseThrow(() -> new NotFoundException("해당 이메일로 회원을 찾을 수 없습니다."));
         List<Post> posts = postRepository.findByAddress_CityAndAddress_DistrictAndAddress_DongAndMember_Email(city, district, dong, email);
 
-        //Entitiy -> DTO 변환해줘서 전환!
+        // Entity -> DTO 변환해줘서 전환!
         return posts.stream()
                 .map(PostResponse::new)
 

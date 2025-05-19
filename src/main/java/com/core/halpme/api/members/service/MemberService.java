@@ -44,7 +44,6 @@ public class MemberService {
         }
 
         Address address = Address.builder()
-                .addressDetail(request.getAddressDetail())
                 .city(request.getCity())
                 .district(request.getDistrict())
                 .dong(request.getDong())

@@ -21,6 +21,4 @@ public class PostCreateRequest {
 
     @NotBlank(message = "동 정보는 필수 입력 사항입니다.")
     private String dong;
-
-    private String addressDetail;
 }
