@@ -5,11 +5,10 @@ import lombok.*;
 
 @Embeddable
 @Getter
-@Setter
+@Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Address {
-    private String addressDetail;
     private String city; // 시
     private String district; // 구
     private String dong; // 동
