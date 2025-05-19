@@ -17,9 +17,10 @@ public class PostResponse {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.city = post.getCity();
-        this.district = post.getDistrict();
-        this.dong = post.getDong();
-        this.username = post.getMember().getUsername();
+
+        this.city = post.getAddress().getCity();
+        this.district = post.getAddress().getDistrict();
+        this.dong = post.getAddress().getDong();
+        this.username = post.getMember().getNickname();
     }
 }

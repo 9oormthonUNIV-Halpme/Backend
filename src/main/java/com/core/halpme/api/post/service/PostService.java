@@ -8,6 +8,7 @@ import com.core.halpme.api.post.dto.PostResponse;
 import com.core.halpme.api.post.entity.Post;
 import com.core.halpme.api.post.repository.PostRepository;
 
+import com.core.halpme.common.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,9 +25,9 @@ public class PostService {
 
     // 게시물 생성시
     @Transactional
-    public PostResponse createPost(String username, PostCreateRequest request) {
-        Member member = memberRepository.findByNickname(username)
-                .orElseThrow(() -> new IllegalStateException("해당 사람은 존재하지 않습니다."));
+    public PostResponse createPost(String email, PostCreateRequest request) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("해당 사람은 존재하지 않습니다."));
         Post post = Post.builder()
                 .member(member)
                 .title(request.getTitle())
@@ -44,8 +45,11 @@ public class PostService {
 
     //시, 구, 동 기준으로 게시물 조회
     @Transactional(readOnly = true)
-    public List<PostResponse> findPostByAddress(String city, String district, String dong) {
-        List<Post> posts = postRepository.findByCityAndDistrictAndDong(city, district, dong);
+    public List<PostResponse> findPostByAddress(String city, String district, String dong, String email) {
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("해당 이메일로 회원을 찾을 수 없습니다."));
+        List<Post> posts = postRepository.findByAddress_CityAndAddress_DistrictAndAddress_DongAndMember_Email(city, district, dong, email);
 
         //Entitiy -> DTO 변환해줘서 전환!
         return posts.stream()

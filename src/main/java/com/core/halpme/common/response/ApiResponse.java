@@ -25,6 +25,17 @@ public class ApiResponse<T> {
         return ResponseEntity.status(status.getStatusCode()).body(response);
     }
 
+    // 201 Created 응답
+    public static <T> ResponseEntity<ApiResponse<T>> successCreated(SuccessStatus status, T data) {
+        ApiResponse<T> response = ApiResponse.<T>builder()
+                .status(201)  // 201 Created 상태 코드
+                .success(true)
+                .message(status.getMessage())
+                .data(data)
+                .build();
+        return ResponseEntity.status(201).body(response);  // 201 상태 코드 반환
+    }
+
     public static ResponseEntity<ApiResponse<Void>> successOnly(SuccessStatus status) {
         ApiResponse<Void> response = ApiResponse.<Void>builder()
                 .status(status.getStatusCode())
