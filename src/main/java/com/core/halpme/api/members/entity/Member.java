@@ -74,4 +74,17 @@ public class Member extends BaseTimeEntity {
         this.posts.add(post);
         post.setMember(this);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Member member = (Member) obj;
+        return id != null && id.equals(member.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
