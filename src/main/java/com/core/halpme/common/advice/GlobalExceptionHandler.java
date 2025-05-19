@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleException(Exception ex) {
 
-        log.error("[handleException] 알 수 없는 오류 발생: {}", ex);
+        log.error("[handleException] 알 수 없는 오류 발생: ", ex);
 
         return ResponseEntity.status(ErrorStatus.INTERNAL_SERVER_ERROR.getStatusCode())
                 .body(ApiResponse.fail(ErrorStatus.INTERNAL_SERVER_ERROR.getStatusCode(),
