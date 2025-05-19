@@ -27,7 +27,7 @@ public class MemberController {
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<Void>> signup(@Valid @RequestBody RegisterRequest request) {
         memberService.signup(request);
-        return ApiResponse.successOnly(SuccessStatus.USER_SIGNUP_SUCCESS);
+        return ApiResponse.successOnly(SuccessStatus.MEMBER_SIGNUP_SUCCESS);
     }
 
     // 로그인
