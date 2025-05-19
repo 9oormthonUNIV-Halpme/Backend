@@ -26,8 +26,10 @@ public class PostService {
     // 게시물 생성시
     @Transactional
     public PostResponse createPost(String email, PostCreateRequest request) {
+
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("해당 사람은 존재하지 않습니다."));
+
         Post post = Post.builder()
                 .member(member)
                 .title(request.getTitle())
@@ -38,6 +40,7 @@ public class PostService {
                         request.getDong()
                 ))
                 .build();
+
         postRepository.save(post);
 
         return new PostResponse(post);
@@ -51,7 +54,7 @@ public class PostService {
                 .orElseThrow(() -> new NotFoundException("해당 이메일로 회원을 찾을 수 없습니다."));
         List<Post> posts = postRepository.findByAddress_CityAndAddress_DistrictAndAddress_DongAndMember_Email(city, district, dong, email);
 
-        //Entitiy -> DTO 변환해줘서 전환!
+        // Entity -> DTO 변환해줘서 전환!
         return posts.stream()
                 .map(PostResponse::new)
 
