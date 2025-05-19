@@ -1,9 +1,8 @@
 package com.core.halpme.api.post.entity;
 
 import com.core.halpme.api.members.entity.Address;
-import com.core.halpme.api.members.entity.User;
+import com.core.halpme.api.members.entity.Member;
 import com.core.halpme.common.entity.BaseTimeEntity;
-import com.core.halpme.domain.Requester;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,30 +10,42 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
+@Builder(toBuilder = true)
+@Table(name = "posts")
 public class Post extends BaseTimeEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private Long id;
 
+    @Column(name = "title")
     private String title;
+
+    @Column(name = "content")
     private String content;
+
+    @Column(name = "image_url")
     private String imageUrl;
-    private String userName;
-    private String userPhoneNumber;
-    private String userSpecialNote;
-    private enum PostUserType{User, Requester};
 
-    //activity에 있었던거
-    private String activityProof; // 인증사진
-    private enum ActivityStatus{Completed, Waiting, Cancelled};
+    @Enumerated(EnumType.STRING)
+    private PostMemberType postMemberType;
 
+    @Enumerated(EnumType.STRING)
+    private ActivityStatus activityStatus;
 
     @Embedded
     private Address address;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
+    // Post-Member 양방향 연관관계 값 설정 메서드
+    public void setMember(Member member) {
+        this.member = member;
+        if (!member.getPosts().contains(this)) {
+            member.getPosts().add(this);
+        }
+    }
 }

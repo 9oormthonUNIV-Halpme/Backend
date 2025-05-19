@@ -17,6 +17,8 @@ public enum ErrorStatus {
     BAD_REQUEST_DUPLICATE_NICKNAME(HttpStatus.BAD_REQUEST, "이미 사용 중인 닉네임입니다."),
     BAD_REQUEST_DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "이미 사용 중인 이메일입니다."),
     BAD_REQUEST_INVALID_IMAGE_TYPE(HttpStatus.BAD_REQUEST,"이미지 확장자 업로드만 가능합니다"),
+    BAD_REQUEST_DUPLICATE_PHONE(HttpStatus.BAD_REQUEST, "이미 사용 중인 전화번호입니다."),
+    BAD_REQUEST_INVALID_EMAIL(HttpStatus.BAD_REQUEST, "잘못된 이메일입니다."),
 
     /**
      * 401 UNAUTHORIZED
