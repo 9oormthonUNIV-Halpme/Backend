@@ -4,6 +4,7 @@ import com.core.halpme.common.exception.BaseException;
 import com.core.halpme.common.response.ApiResponse;
 import com.core.halpme.common.response.ErrorStatus;
 import io.swagger.v3.oas.annotations.Hidden;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,41 +15,45 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.stream.Collectors;
 
+@Slf4j
 @Hidden
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 커스텀 예외 처리 (ex. 권한 없음)
+    // 커스텀 예외 처리 (ex. BAD_REQUEST, CONFLICT 등)
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<ApiResponse> handleCostumeException(BaseException ex) {
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(ex.getStatusCode())
                 .body(ApiResponse.fail(ex.getStatusCode(), ex.getMessage()));
     }
 
     // 글로벌 예외 처리 (ex. 명시되어 있지 않은 예외 발생)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.fail(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                        ErrorStatus.INTERNAL_SERVER_ERROR.getMessage()));
+
+        log.error("[handleException] 알 수 없는 오류 발생: ", ex);
+
+        return ResponseEntity.status(ErrorStatus.INTERNAL_SERVER_ERROR.getStatusCode())
+                .body(ApiResponse.fail(ErrorStatus.INTERNAL_SERVER_ERROR.getStatusCode(),
+                        "알 수 없는 오류 발생"));
     }
 
     // 잘못된 인자 전달 시 발생 (ex. 숫자 필드에 문자열 입력)
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), ex.getMessage()));
+        return ResponseEntity.status(ErrorStatus.BAD_REQUEST_MISSING_PARAM.getStatusCode())
+                .body(ApiResponse.fail(ErrorStatus.BAD_REQUEST_MISSING_PARAM.getStatusCode(), ex.getMessage()));
     }
 
     // 필수 요청 파라미터 누락 (ex. ID 없이 게시글 단건 조회)
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ApiResponse> handleMissingParameterException(MissingServletRequestParameterException ex) {
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.fail(HttpStatus.BAD_REQUEST.value(),
-                        ErrorStatus.BAD_REQUEST_MISSING_REQUIRED_FIELD.getMessage() + ex.getParameterName()));
+        return ResponseEntity.status(ErrorStatus.BAD_REQUEST_MISSING_REQUIRED_FIELD.getStatusCode())
+                .body(ApiResponse.fail(ErrorStatus.BAD_REQUEST_MISSING_REQUIRED_FIELD.getStatusCode(),
+                        ErrorStatus.BAD_REQUEST_MISSING_REQUIRED_FIELD.getMessage() + ": " + ex.getParameterName()));
     }
 
     // DTO 유효성 검증 실패 (ex. @NotBlack 필드를 비운 채로 요청)
@@ -60,7 +65,7 @@ public class GlobalExceptionHandler {
                         error.getDefaultMessage()))
                 .collect(Collectors.joining(", "));
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(ErrorStatus.BAD_REQUEST_MISSING_PARAM.getStatusCode())
                 .body(ApiResponse.fail(ErrorStatus.BAD_REQUEST_MISSING_PARAM.getStatusCode(), errorMsg));
     }
 
@@ -68,8 +73,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity<ApiResponse> handleEmptyResultDataAccessException(final EmptyResultDataAccessException ex) {
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ApiResponse.fail(HttpStatus.NOT_FOUND.value(),
+        return ResponseEntity.status(ErrorStatus.NOT_FOUND_RESOURCE.getStatusCode())
+                .body(ApiResponse.fail(ErrorStatus.NOT_FOUND_RESOURCE.getStatusCode(),
                         ErrorStatus.NOT_FOUND_RESOURCE.getMessage()));
     }
+
+
 }
