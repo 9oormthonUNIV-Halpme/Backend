@@ -26,18 +26,24 @@ public class PostService {
     // 게시물 생성시
     @Transactional
     public PostResponse createPost(String email, PostCreateRequest request) {
+
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("해당 사람은 존재하지 않습니다."));
+
+        Address address = Address.builder()
+                .addressDetail(request.getAddressDetail())
+                .city(request.getCity())
+                .district(request.getDistrict())
+                .dong(request.getDong())
+                .build();
+
         Post post = Post.builder()
                 .member(member)
                 .title(request.getTitle())
                 .content(request.getContent())
-                .address(new Address(
-                        request.getCity(),
-                        request.getDistrict(),
-                        request.getDong()
-                ))
+                .address(address)
                 .build();
+
         postRepository.save(post);
 
         return new PostResponse(post);
