@@ -6,6 +6,7 @@ import com.core.halpme.api.post.repository.PostRepository;
 import com.core.halpme.api.post.service.PostService;
 import com.core.halpme.common.response.ApiResponse;
 import com.core.halpme.common.response.SuccessStatus;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ public class PostController {
     private final PostService postService;
 
     //게시물 생성
+    @Operation(summary = "게시물 생성", description = "게시물 생성")
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<PostResponse>> createPost(@Valid @RequestBody PostCreateRequest request) {
@@ -37,6 +39,7 @@ public class PostController {
     }
 
     //시, 구, 동 기준으로 게시물 조회
+    @Operation(summary = "게시물 조회", description = "시, 구, 동 기준으로 게시물 조회")
     @GetMapping
     public ResponseEntity<ApiResponse<List<PostResponse>>> getPostByAddress(
             @RequestParam String city,
@@ -52,6 +55,7 @@ public class PostController {
     }
 
     //게시물 수정
+    @Operation(summary = "게시물 수정", description = "게시물 수정")
     @PutMapping("/{postId}")
     public ResponseEntity<ApiResponse<PostResponse>> updatePost(
             @PathVariable Long postId,
@@ -64,6 +68,7 @@ public class PostController {
     }
 
     //게시물 삭제
+    @Operation(summary = "게시물 삭제", description = "게시물 삭제")
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable Long postId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
