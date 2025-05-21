@@ -53,6 +53,7 @@ public class SecurityConfig {
                                 "/error"              // 에러 페이지
                         ).permitAll()
                         .requestMatchers(
+                                "/api/v3/api-docs",
                                 "/api/v3/api-docs/**",
                                 "/api/swagger-ui/**",
                                 "/api/swagger-ui.html",
