@@ -1,7 +1,7 @@
 package com.core.halpme.api.members.controller;
 
-import com.core.halpme.api.members.dto.LoginRequest;
-import com.core.halpme.api.members.dto.RegisterRequest;
+import com.core.halpme.api.members.dto.LoginRequestDto;
+import com.core.halpme.api.members.dto.RegisterRequestDto;
 import com.core.halpme.api.members.service.MemberService;
 import com.core.halpme.common.response.ApiResponse;
 import com.core.halpme.common.response.SuccessStatus;
@@ -25,7 +25,7 @@ public class MemberController {
     // 회원가입
     @Operation(summary = "회원가입", description = "회원가입")
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<Void>> signup(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<ApiResponse<Void>> signup(@Valid @RequestBody RegisterRequestDto request) {
         memberService.signup(request);
         return ApiResponse.successOnly(SuccessStatus.MEMBER_SIGNUP_SUCCESS);
     }
@@ -33,7 +33,7 @@ public class MemberController {
     // 로그인
     @Operation(summary = "로그인", description = "로그인 성공 시 JWT 토큰을 반환")
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<Map<String, Object>>> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<ApiResponse<Map<String, Object>>> login(@Valid @RequestBody LoginRequestDto request) {
         Map<String, Object> result = memberService.login(request);
         return ApiResponse.success(SuccessStatus.LOGIN_SUCCESS, result);
     }
