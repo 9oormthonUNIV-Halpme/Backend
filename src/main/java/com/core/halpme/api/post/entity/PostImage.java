@@ -15,7 +15,7 @@ public class PostImage extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "image_id")
+    @Column(name = "post_image_id")
     private Long id;
 
     private String imageUrl;
