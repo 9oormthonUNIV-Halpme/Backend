@@ -38,7 +38,6 @@ public class PostController {
 
     //시, 구, 동 기준으로 게시물 조회
     @GetMapping
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<List<PostResponse>>> getPostByAddress(
             @RequestParam String city,
             @RequestParam String district,
@@ -54,7 +53,6 @@ public class PostController {
 
     //게시물 수정
     @PutMapping("/{postId}")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<PostResponse>> updatePost(
             @PathVariable Long postId,
             @Valid @RequestBody PostCreateRequest request) {
@@ -67,12 +65,11 @@ public class PostController {
 
     //게시물 삭제
     @DeleteMapping("/{postId}")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable Long postId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
 
         postService.deletePost(postId, email);
-        return ApiResponse.success(SuccessStatus.ARTICLE_DELETE_SUCCESS, null);
+        return ApiResponse.successOnly(SuccessStatus.ARTICLE_DELETE_SUCCESS);
     }
 }
