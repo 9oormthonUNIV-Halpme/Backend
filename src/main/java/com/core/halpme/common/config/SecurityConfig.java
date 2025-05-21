@@ -53,11 +53,12 @@ public class SecurityConfig {
                                 "/error"              // 에러 페이지
                         ).permitAll()
                         .requestMatchers(
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/swagger-resources/**",
-                                "/webjars/**"
+                                "/api/v3/api-docs",
+                                "/api/v3/api-docs/**",
+                                "/api/swagger-ui/**",
+                                "/api/swagger-ui.html",
+                                "/api/swagger-resources/**",
+                                "/api/webjars/**"
                         ).permitAll()
                         .anyRequest().authenticated() // 나머지 요청은 인증 필요
                 )
