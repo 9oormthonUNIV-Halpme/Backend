@@ -35,7 +35,8 @@ public class PostService {
                 .address(new Address(
                         request.getCity(),
                         request.getDistrict(),
-                        request.getDong()
+                        request.getDong(),
+                        request.getAddressDetail()
                 ))
                 .build();
         postRepository.save(post);
@@ -57,5 +58,45 @@ public class PostService {
 
                 //위에서 변환된 DTO를 다시 리스트화 시켜서 반환
                 .collect(Collectors.toList());
+    }
+
+    //수정
+    @Transactional
+    public PostResponse updatePost(Long postId, String email, PostCreateRequest request) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException("게시글을 찾을 수 없습니다."));
+
+        // 본인 여부 확인(jwt)
+        if(!post.getMember().getEmail().equals(email)) {
+            throw new IllegalArgumentException("게시글을 수정할 권한이 없습니다.");
+        }
+
+        //수정 내용 반영
+        post = post.toBuilder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .address(new Address(
+                        request.getCity(),
+                        request.getDistrict(),
+                        request.getDong(),
+                        request.getAddressDetail()
+                ))
+                .build();
+
+        postRepository.save(post);
+
+        return new PostResponse(post);
+    }
+
+    @Transactional
+    public void deletePost(Long postId, String email) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException("게시글을 찾을 수 없습니다."));
+        if(!post.getMember().getEmail().equals(email)) {
+            throw new IllegalArgumentException("게시글을 삭제할 권한이 없습니다.");
+        }
+
+
+        postRepository.delete(post);
     }
 }

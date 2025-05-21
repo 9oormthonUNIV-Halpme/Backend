@@ -52,4 +52,27 @@ public class PostController {
         return ApiResponse.success(SuccessStatus.ARTICLE_GET_SUCCESS, posts);
     }
 
+    //게시물 수정
+    @PutMapping("/{postId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<PostResponse>> updatePost(
+            @PathVariable Long postId,
+            @Valid @RequestBody PostCreateRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName(); //JWT에서 가져옴
+
+        PostResponse response = postService.updatePost(postId, email, request);
+        return ApiResponse.success(SuccessStatus.ARTICLE_UPDATE_SUCCESS, response);
+    }
+
+    //게시물 삭제
+    @DeleteMapping("/{postId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable Long postId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        postService.deletePost(postId, email);
+        return ApiResponse.success(SuccessStatus.ARTICLE_DELETE_SUCCESS, null);
+    }
 }
