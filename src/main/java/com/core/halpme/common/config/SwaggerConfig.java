@@ -14,6 +14,6 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("Halpme API")
                         .description("할프미 프로젝트 Swagger 문서입니다.")
-                        .version("1.0"));
+                        .version("1.0.0"));
     }
 }
