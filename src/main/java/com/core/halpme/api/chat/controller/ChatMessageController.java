@@ -21,7 +21,7 @@ public class ChatMessageController {
     private final ChatRoomService chatRoomService;
     private final SimpMessagingTemplate messagingTemplate;
 
-    @MessageMapping("api/v1/message")
+    @MessageMapping("/message")
     public void sendMessage(ChatMessageDto message) {
         // 실시간으로 방에서 채팅하기
         ChatMessage newChat = chatMessageService.createChatMessage(message);

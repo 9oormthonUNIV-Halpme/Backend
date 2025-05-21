@@ -30,14 +30,13 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
-    private final ChatRoomRepository chatRoomRepository;
 
     @PostMapping("/personal")
     public CreateChatRoomResponse createPersonalChatRoom(@RequestBody CreateChatRoomRequest request) {
         return chatRoomService.createChatRoomForPersonal(request);
     }
 
-    @GetMapping("/messages")
+    @GetMapping("/messages") //두 유저가 주고 받은 메시지 목록
     public ResponseEntity<List<ChatMessageDto>> getMessagesBetweenUsers(
             @RequestParam String email1,
             @RequestParam String email2
@@ -49,7 +48,7 @@ public class ChatRoomController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/rooms")
+    @GetMapping("/rooms") // 모든 체팅방 목록 보기
     public ResponseEntity<List<ChatRoomDto>> getChatRooms(@RequestParam String userEmail) {
         List<ChatRoomDto> rooms = chatRoomService.getChatRoomsForUser(userEmail);
         return ResponseEntity.ok(rooms);
