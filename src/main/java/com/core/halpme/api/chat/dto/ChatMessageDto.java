@@ -1,6 +1,7 @@
 package com.core.halpme.api.chat.dto;
 
 import com.core.halpme.api.chat.entity.ChatMessage;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,14 +18,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ChatMessageDto {
     private String roomId;
-    private String authorId;
+    private String sender;
     private String message;
 
     /* Dto -> Entity */
     public ChatMessage toEntity() {
         ChatMessage chatMessage = ChatMessage.builder()
                 .roomId(roomId)
-                .authorId(authorId)
+                .sender(sender)
                 .message(message)
                 .build();
         return chatMessage;
@@ -33,7 +34,7 @@ public class ChatMessageDto {
     public static ChatMessageDto fromEntity(ChatMessage chatMessage) {
         return new ChatMessageDto(
                 chatMessage.getRoomId(),
-                chatMessage.getAuthorId(),
+                chatMessage.getSender(),
                 chatMessage.getMessage()
         );
     }

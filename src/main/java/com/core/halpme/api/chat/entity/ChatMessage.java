@@ -22,10 +22,10 @@ public class ChatMessage extends BaseTimeEntity {
     private Long id;
 
     @JoinColumn(name = "roomId", insertable = false, updatable = false)
-    private String roomId; //단순히 ID 값만 필요  (ChatRoom)
+    private String roomId;
 
-    @JoinColumn(name = "authorId", insertable = false, updatable = false)
-    private String authorId; //단순히 ID 값만 필요 (User)
+    @JoinColumn(name = "sender", insertable = false, updatable = false)
+    private String sender; //이메일
 
     @Column(name = "message")
     private String message;
