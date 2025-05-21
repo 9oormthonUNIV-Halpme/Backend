@@ -2,12 +2,12 @@ package com.core.halpme.api.chat.service;
 
 
 import com.core.halpme.api.chat.dto.ChatRoomDto;
-import com.core.halpme.api.chat.dto.CreateChatRoomRequest;
-import com.core.halpme.api.chat.dto.CreateChatRoomResponse;
+import com.core.halpme.api.chat.dto.CreateChatRoomRequestDto;
+import com.core.halpme.api.chat.dto.CreateChatRoomResponseDto;
 
 import java.util.List;
 
 public interface ChatRoomService {
-    CreateChatRoomResponse createChatRoomForPersonal(CreateChatRoomRequest request);
+    CreateChatRoomResponseDto createChatRoomForPersonal(CreateChatRoomRequestDto request);
     List<ChatRoomDto> getChatRoomsForUser(String email);
 }

@@ -1,12 +1,11 @@
 package com.core.halpme.api.chat.service;
 
 import com.core.halpme.api.chat.dto.ChatRoomDto;
-import com.core.halpme.api.chat.dto.CreateChatRoomRequest;
-import com.core.halpme.api.chat.dto.CreateChatRoomResponse;
-import com.core.halpme.api.chat.entity.ChatMessage;
+import com.core.halpme.api.chat.dto.CreateChatRoomRequestDto;
+import com.core.halpme.api.chat.dto.CreateChatRoomResponseDto;
 import com.core.halpme.api.chat.entity.ChatRoom;
-import com.core.halpme.api.chat.repository.ChatMessageRepository;
 import com.core.halpme.api.chat.repository.ChatRoomRepository;
+import com.core.halpme.api.chat.repository.MessageReadStatusRepository;
 import com.core.halpme.api.members.entity.Member;
 import com.core.halpme.api.members.jwt.SecurityUtil;
 import com.core.halpme.api.members.repository.MemberRepository;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,9 +25,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final MemberRepository memberRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final SecurityUtil securityUtil;
+    private final MessageReadStatusRepository messageReadStatusRepository;
 
     @Override
-    public CreateChatRoomResponse createChatRoomForPersonal(CreateChatRoomRequest chatRoomRequest) {
+    public CreateChatRoomResponseDto createChatRoomForPersonal(CreateChatRoomRequestDto chatRoomRequest) {
         String requesterEmail = securityUtil.getCurrentMemberUsername(); // 로그인 사용자
 
         if (!requesterEmail.equals(chatRoomRequest.getRoomMakerEmail())) {
@@ -57,7 +56,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         );
 
         if (existingRoom.isPresent()) {
-            return new CreateChatRoomResponse(
+            return new CreateChatRoomResponseDto(
                     roomMaker.getEmail(),
                     guest.getEmail(),
                     existingRoom.get().getId()
@@ -69,7 +68,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         newRoom.addMembers(roomMaker, guest);
         chatRoomRepository.save(newRoom);
 
-        return new CreateChatRoomResponse(
+        return new CreateChatRoomResponseDto(
                 roomMaker.getEmail(),
                 guest.getEmail(),
                 newRoom.getId()
@@ -81,7 +80,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public List<ChatRoomDto> getChatRoomsForUser(String email) {
         List<ChatRoom> rooms = chatRoomRepository.findAllByMemberEmail(email);
         return rooms.stream()
-                .map(ChatRoomDto::fromEntity)
+                .map(room -> ChatRoomDto.fromEntity(room, email, messageReadStatusRepository))
                 .toList();
     }
+
 }

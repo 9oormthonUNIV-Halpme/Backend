@@ -5,12 +5,20 @@ import com.core.halpme.common.exception.BaseException;
 import com.core.halpme.common.response.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.WebSocketHandler;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -26,20 +34,43 @@ public class StompHandler implements ChannelInterceptor {
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
             String authHeader = accessor.getFirstNativeHeader("Authorization");
             log.info("WebSocket connect Authorization header: {}", authHeader);
+
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 throw new BaseException(ErrorStatus.UNAUTHORIZED_EMPTY_TOKEN.getHttpStatus(), "헤더 없음");
             }
 
-            String token = authHeader.substring(7); // "Bearer " 제거
+            String token = authHeader.substring(7);
 
             if (!jwtTokenProvider.validateToken(token)) {
                 throw new BaseException(ErrorStatus.UNAUTHORIZED_INVALID_TOKEN.getHttpStatus(), "토큰 무효");
             }
 
             String email = jwtTokenProvider.getEmail(token);
-            accessor.setUser(new StompPrincipal(email)); // 나중에 accessor.getUser()로 꺼내쓸 수 있음
+            StompPrincipal principal = new StompPrincipal(email);
+
+            // ✅ 인증 객체 생성
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(principal, null, List.of());
+
+            // ✅ 1) WebSocket에서 사용할 Principal 설정
+            accessor.setUser(authentication);
+
+            // ✅ 2) SecurityContextHolder에 직접 넣어줌
+            org.springframework.security.core.context.SecurityContextHolder.getContext()
+                    .setAuthentication(authentication);
+
+            // ✅ 3) 세션 속성도 유지
+            Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
+            if (sessionAttributes == null) {
+                sessionAttributes = new HashMap<>();
+                accessor.setSessionAttributes(sessionAttributes);
+            }
+            sessionAttributes.put("user", principal);
         }
 
         return message;
     }
+
+
+
 }

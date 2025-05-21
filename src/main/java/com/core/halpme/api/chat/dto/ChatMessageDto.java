@@ -17,9 +17,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatMessageDto {
+
+    private Long id;
     private String roomId;
     private String sender;
     private String message;
+    private boolean isRead;
+
+
 
     /* Dto -> Entity */
     public ChatMessage toEntity() {
@@ -33,9 +38,11 @@ public class ChatMessageDto {
 
     public static ChatMessageDto fromEntity(ChatMessage chatMessage) {
         return new ChatMessageDto(
+                chatMessage.getId(),
                 chatMessage.getRoomId(),
                 chatMessage.getSender(),
-                chatMessage.getMessage()
+                chatMessage.getMessage(),
+                chatMessage.isRead()
         );
     }
 }

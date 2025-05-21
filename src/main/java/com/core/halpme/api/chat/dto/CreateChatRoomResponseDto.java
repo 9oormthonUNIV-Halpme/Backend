@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class CreateChatRoomResponse {
+public class CreateChatRoomResponseDto {
     private String roomMakerEmail;
     private String guestEmail;
     private String chatRoomId;
