@@ -54,10 +54,13 @@ public class SecurityConfig {
                                 "/chat/inbox/**","/ws/**"
                         ).permitAll()
                         .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
                                 "/api/v3/api-docs",
                                 "/api/v3/api-docs/**",
                                 "/api/v3/api-docs/swagger-config",
                                 "/api/swagger-ui/**",
+                                "/swagger-ui.html",
                                 "/api/swagger-ui.html",
                                 "/api/swagger-resources/**",
                                 "/api/webjars/**"
