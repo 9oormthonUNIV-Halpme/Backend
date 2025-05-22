@@ -53,16 +53,6 @@ public class ChatMessageServiceImpl implements ChatMessageService{
     }
 
 
-    public List<ChatMessage> getMessagesBetween(String email1, String email2) {
-        // 두 이메일을 모두 포함한 ChatRoom 찾기
-        ChatRoom chatRoom = chatRoomRepository.findChatRoomByMemberEmails(email1, email2)
-                .orElseThrow(() -> new IllegalArgumentException("채팅방이 존재하지 않습니다."));
-
-        // 해당 방 ID로 메시지 조회
-        return chatMessageRepository.findByRoomId(chatRoom.getId());
-    }
-
-
 
     public List<ChatMessage> getMessagesByRoomId(String roomId) {
         return chatMessageRepository.findByRoomId(roomId);
