@@ -1,9 +1,6 @@
 package com.core.halpme.api.chat.controller;
 
-import com.core.halpme.api.chat.dto.ChatMessageDto;
-import com.core.halpme.api.chat.dto.ChatRoomDto;
-import com.core.halpme.api.chat.dto.CreateChatRoomRequestDto;
-import com.core.halpme.api.chat.dto.CreateChatRoomResponseDto;
+import com.core.halpme.api.chat.dto.*;
 import com.core.halpme.api.chat.entity.ChatMessage;
 import com.core.halpme.api.chat.entity.ChatRoom;
 import com.core.halpme.api.chat.entity.MessageReadStatus;
@@ -12,9 +9,12 @@ import com.core.halpme.api.chat.repository.MessageReadStatusRepository;
 import com.core.halpme.api.chat.service.ChatMessageService;
 import com.core.halpme.api.chat.service.ChatRoomService;
 import com.core.halpme.api.members.jwt.SecurityUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -32,12 +32,17 @@ public class ChatRoomController {
     private final ChatMessageService chatMessageService;
 
 
-    @PostMapping("/personal") // 두 유저 사이의 채팅방 생성(두 유저의 이메일 필요)
-    public CreateChatRoomResponseDto createPersonalChatRoom(@RequestBody CreateChatRoomRequestDto request) {
-        return chatRoomService.createChatRoomForPersonal(request);
+    @PostMapping("/personal")
+    @Operation(summary = "두 유저 사이의 채팅방 생성", description = "게시글 작성자의 Email 필요")
+    @PreAuthorize("isAuthenticated()")
+    public CreateChatRoomResponseDto createPersonalChatRoom(@RequestBody GuestEmailDto request) {
+        String roomMakerEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        return chatRoomService.createChatRoomForPersonal(roomMakerEmail, request.getGuestEmail());
     }
 
+
     @GetMapping("/messages")
+    @Operation(summary = "채팅방 채팅 기록 반환", description = "RoomId 필요")
     public ResponseEntity<List<ChatMessageDto>> getMessagesByRoomId(
             @RequestParam String roomId
     ) {
@@ -49,8 +54,12 @@ public class ChatRoomController {
     }
 
 
-    @GetMapping("/rooms") // 모든 체팅방 목록 보기
-    public ResponseEntity<List<ChatRoomDto>> getChatRooms(@RequestParam String userEmail) {
+    @GetMapping("/rooms")
+    @Operation(summary = "사용자의 채팅방 목록 보기", description = "인증 토큰 필요")
+    public ResponseEntity<List<ChatRoomDto>> getChatRooms() {
+        // 현재 로그인한 사용자 이메일 꺼내기
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
         List<ChatRoomDto> rooms = chatRoomService.getChatRoomsForUser(userEmail);
         return ResponseEntity.ok(rooms);
     }
