@@ -21,11 +21,15 @@ public enum SuccessStatus {
     ARTICLE_UPDATE_SUCCESS(HttpStatus.OK,"게시글 수정 성공"),
     MEMBER_SIGNUP_SUCCESS(HttpStatus.OK,"회원가입 성공"),
     AUTH_SUCCESS(HttpStatus.OK, "인증에 성공했습니다."),
-
+    CHATROOM_LIST_SUCCESS(HttpStatus.OK, "채팅방 목록 조회 성공"),
+    CHAT_MESSAGES_SUCCESS(HttpStatus.OK, "채팅 메시지 조회 성공"),
+    CHAT_MESSAGES_GET_SUCCESS(HttpStatus.OK, "채팅 메시지 목록 조회 성공"),
     /**
      * 201 CREATED
      */
     ARTICLE_CREATE_SUCCESS(HttpStatus.CREATED, "게시판 등록 성공"),
+    CHAT_MESSAGE_SENT(HttpStatus.CREATED, "채팅 메시지 전송 성공"),
+    CHAT_ROOM_CREATE_SUCCESS(HttpStatus.CREATED, "채팅방 생성 성공"),
 
     /**
      * 204 NO CONTENT
