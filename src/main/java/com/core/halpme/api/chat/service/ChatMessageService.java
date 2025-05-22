@@ -8,6 +8,5 @@ import java.util.UUID;
 
 public interface ChatMessageService {
     ChatMessage createChatMessage(ChatMessageDto dto);
-    void markMessageAsReadByAll(ChatMessage message);
     List<ChatMessage> getMessagesByRoomId(String roomId);
 }

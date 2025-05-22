@@ -67,11 +67,15 @@ public class WebSocketEventListener {
 
         Principal principal = accessor.getUser();
         if (principal == null) {
-            Object sessionUser = accessor.getSessionAttributes().get("user");
-            if (sessionUser instanceof Principal p) {
-                principal = p;
+            Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
+            if (sessionAttributes != null) {
+                Object sessionUser = sessionAttributes.get("user");
+                if (sessionUser instanceof Principal p) {
+                    principal = p;
+                }
             }
         }
+
 
         if (principal == null) {
             log.warn(">> WebSocket 종료됨. 근데 Principal 못 가져옴. 세션 ID: {}", accessor.getSessionId());

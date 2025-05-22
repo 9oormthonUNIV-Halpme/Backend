@@ -48,18 +48,10 @@ public class StompHandler implements ChannelInterceptor {
             String email = jwtTokenProvider.getEmail(token);
             StompPrincipal principal = new StompPrincipal(email);
 
-            // ✅ 인증 객체 생성
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(principal, null, List.of());
+            //setUser에 principal만 설정
+            accessor.setUser(principal);
 
-            // ✅ 1) WebSocket에서 사용할 Principal 설정
-            accessor.setUser(authentication);
-
-            // ✅ 2) SecurityContextHolder에 직접 넣어줌
-            org.springframework.security.core.context.SecurityContextHolder.getContext()
-                    .setAuthentication(authentication);
-
-            // ✅ 3) 세션 속성도 유지
+            //세션에도 저장
             Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
             if (sessionAttributes == null) {
                 sessionAttributes = new HashMap<>();

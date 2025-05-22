@@ -18,6 +18,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
@@ -48,7 +49,7 @@ public class ChatMessageController {
         }
 
         if (principal == null) {
-            log.warn("❗ 메시지 발신자 정보 없음. Principal이 null임");
+            log.warn("메시지 발신자 정보 없음. Principal이 null임");
             return;
         }
 
@@ -57,14 +58,6 @@ public class ChatMessageController {
 
         ChatMessage saved = chatMessageService.createChatMessage(message);
 
-        // ✅ 현재 접속자 수 확인
-        Set<String> connectedUsers = WebSocketEventListener.getUsersInRoom(message.getRoomId());
-
-        boolean allRead = connectedUsers.size() >= 2;
-        if (allRead) {
-            chatMessageService.markMessageAsReadByAll(saved);
-        }
-
         messagingTemplate.convertAndSend("/sub/channel/" + message.getRoomId(), ChatMessageDto.fromEntity(saved));
     }
 
@@ -72,15 +65,28 @@ public class ChatMessageController {
 
 
     @MessageMapping("/read")
-    public void markAsRead(@Payload Long messageId, Principal principal) {
+    public void markAsRead(@Payload Long messageId, Message<?> rawMessage) {
+        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(rawMessage);
+        Principal principal = accessor.getUser();
 
+        if (principal == null) {
+            Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
+            if (sessionAttributes != null) {
+                Object sessionUser = sessionAttributes.get("user");
+                if (sessionUser instanceof Principal p) {
+                    principal = p;
+                }
+            }
+        }
+        System.out.println(principal);
         if (principal == null) {
             log.warn("읽음 처리 실패: principal이 null입니다.");
             return;
         }
         String readerEmail = principal.getName();
 
-        MessageReadStatus status = messageReadStatusRepository.findByMessageIdAndReaderEmail(messageId, readerEmail)
+        MessageReadStatus status = messageReadStatusRepository
+                .findByMessageIdAndReaderEmail(messageId, readerEmail)
                 .orElseThrow(() -> new RuntimeException("읽음 상태를 찾을 수 없습니다."));
 
         if (!status.isRead()) {
@@ -88,6 +94,7 @@ public class ChatMessageController {
             messageReadStatusRepository.save(status);
         }
     }
+
 
 
 

@@ -22,7 +22,6 @@ public class ChatMessageDto {
     private String roomId;
     private String sender;
     private String message;
-    private boolean isRead;
 
 
 
@@ -41,8 +40,7 @@ public class ChatMessageDto {
                 chatMessage.getId(),
                 chatMessage.getRoomId(),
                 chatMessage.getSender(),
-                chatMessage.getMessage(),
-                chatMessage.isRead()
+                chatMessage.getMessage()
         );
     }
 }

@@ -36,17 +36,17 @@ public class ChatMessageServiceImpl implements ChatMessageService{
         chatRoom.setLastChatMesg(saved);
         chatRoomRepository.save(chatRoom);
 
-        // 4. 읽음 상태 저장 (본인 제외)
+        // 4. 읽음 상태 저장 (모든 참여자)
         for (Member participant : chatRoom.getChatRoomMembers()) {
-            if (!participant.getEmail().equals(chatMessage.getSender())) {
-                messageReadStatusRepository.save(
-                        MessageReadStatus.builder()
-                                .message(saved)
-                                .readerEmail(participant.getEmail())
-                                .isRead(false)
-                                .build()
-                );
-            }
+            boolean isSender = participant.getEmail().equals(chatMessage.getSender());
+
+            messageReadStatusRepository.save(
+                    MessageReadStatus.builder()
+                            .message(saved)
+                            .readerEmail(participant.getEmail())
+                            .isRead(isSender) // 보낸 사람은 읽음 true, 나머진 false
+                            .build()
+            );
         }
 
         return saved;
@@ -63,15 +63,6 @@ public class ChatMessageServiceImpl implements ChatMessageService{
     }
 
 
-    public void markMessageAsReadByAll(ChatMessage message) {
-        List<MessageReadStatus> statuses = messageReadStatusRepository.findAllByMessageId(message.getId());
-
-        for (MessageReadStatus status : statuses) {
-            status.setRead(true);
-        }
-
-        messageReadStatusRepository.saveAll(statuses);
-    }
 
     public List<ChatMessage> getMessagesByRoomId(String roomId) {
         return chatMessageRepository.findByRoomId(roomId);

@@ -30,11 +30,9 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
-    private final SecurityUtil securityUtil;
-    private final ChatRoomRepository chatRoomRepository;
-    private final MessageReadStatusRepository messageReadStatusRepository;
 
-    @PostMapping("/personal") // 두 유저 사이의 채팅방 생성(두 유저의 이메일 필요) --> 이메일로 넣을 지 고민 필요
+
+    @PostMapping("/personal") // 두 유저 사이의 채팅방 생성(두 유저의 이메일 필요)
     public CreateChatRoomResponseDto createPersonalChatRoom(@RequestBody CreateChatRoomRequestDto request) {
         return chatRoomService.createChatRoomForPersonal(request);
     }

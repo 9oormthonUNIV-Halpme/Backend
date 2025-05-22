@@ -31,7 +31,4 @@ public class ChatMessage extends BaseTimeEntity {
 
     @Column(name = "message")
     private String message;
-
-    private boolean isRead = false;
-    private LocalDateTime readAt;
 }
