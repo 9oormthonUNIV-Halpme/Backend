@@ -1,4 +1,4 @@
-package com.core.halpme.api.chat;
+package com.core.halpme.common.event;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
