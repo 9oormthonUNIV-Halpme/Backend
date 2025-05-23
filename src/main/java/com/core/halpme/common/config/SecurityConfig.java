@@ -50,13 +50,17 @@ public class SecurityConfig {
                                 "/css/**", "/js/**", "/images/**",  // 정적 리소스
                                 "/favicon.ico",       // 파비콘
                                 "/h2-console/**",     // H2 콘솔
-                                "/error"              // 에러 페이지
+                                "/error",// 에러 페이지
+                                "/chat/inbox/**","/ws/**"
                         ).permitAll()
                         .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
                                 "/api/v3/api-docs",
                                 "/api/v3/api-docs/**",
                                 "/api/v3/api-docs/swagger-config",
                                 "/api/swagger-ui/**",
+                                "/swagger-ui.html",
                                 "/api/swagger-ui.html",
                                 "/api/swagger-resources/**",
                                 "/api/webjars/**"
