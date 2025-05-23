@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class RegisterRequest {
+public class RegisterRequestDto {
 
     @NotBlank(message = "닉네임은 필수입니다.")
     private String nickname;
