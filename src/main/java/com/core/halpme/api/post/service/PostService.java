@@ -63,7 +63,7 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    //수정
+    //게시물 수정
     @Transactional
     public PostResponse updatePost(Long postId, String email, PostCreateRequest request) {
         Post post = postRepository.findById(postId)
@@ -90,6 +90,7 @@ public class PostService {
         return new PostResponse(post);
     }
 
+    //게시물 삭제
     @Transactional
     public void deletePost(Long postId, String email) {
         Post post = postRepository.findById(postId)

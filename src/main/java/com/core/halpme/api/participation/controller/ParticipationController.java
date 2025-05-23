@@ -29,7 +29,7 @@ public class ParticipationController {
         return ApiResponse.successOnly(SuccessStatus.PARTICIPATION_APPLY_SUCCESS);
     }
 
-    // 내가 신청한 봉사 보기
+    // 내가 신청한 봉사 확인
     @GetMapping("/myapplication")
     public ResponseEntity<ApiResponse<List<ParticipationResponseDto>>> getMyApplications() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

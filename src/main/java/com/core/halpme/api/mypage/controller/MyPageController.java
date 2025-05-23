@@ -15,10 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/mypage")
 @RequiredArgsConstructor
+//마이페이지
 public class MyPageController {
 
     private final MyPageService myPageService;
-
+    //마이페이지 정보조회
     @GetMapping
     public ResponseEntity<ApiResponse<MyPageResponseDto>> getPage() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

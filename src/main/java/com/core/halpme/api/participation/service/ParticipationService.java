@@ -22,6 +22,7 @@ public class ParticipationService {
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
 
+    //봉사 신청하기
     @Transactional
     public void applyToPost(String email, Long postId) {
         Member member = memberRepository.findByEmail(email)
@@ -33,6 +34,7 @@ public class ParticipationService {
         participationRepository.save(participation);
     }
 
+    //내가 신청한 봉사 확인
     @Transactional(readOnly = true)
     public List<ParticipationResponseDto> getMyApplications(String email) {
         Member member = memberRepository.findByEmail(email)
