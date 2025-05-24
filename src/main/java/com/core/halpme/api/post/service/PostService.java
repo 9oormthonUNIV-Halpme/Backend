@@ -36,7 +36,6 @@ public class PostService {
                 .district(request.getDistrict())
                 .dong(request.getDong())
                 .addressDetail(request.getAddressDetail())
-
                 .build();
 
         Post post = Post.builder()
@@ -66,6 +65,25 @@ public class PostService {
                 //위에서 변환된 DTO를 다시 리스트화 시켜서 반환
                 .collect(Collectors.toList());
     }
+
+
+    //게시글 조회
+    @Transactional(readOnly = true)
+    public PostResponse getMyPost(String email, Long postId) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("회원 정보를 찾을 수 없습니다."));
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException("게시글이 존재하지 않습니다."));
+
+        // 작성자 확인
+        if (!post.getMember().getEmail().equals(email)) {
+            throw new IllegalArgumentException("본인이 작성한 게시글만 조회할 수 있습니다.");
+        }
+
+        return new PostResponse(post);
+    }
+
 
     //게시물 수정
     @Transactional

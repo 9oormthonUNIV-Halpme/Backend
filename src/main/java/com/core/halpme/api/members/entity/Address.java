@@ -9,7 +9,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Address {
     private String city; // 시
     private String district; // 구

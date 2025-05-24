@@ -24,6 +24,7 @@ public enum SuccessStatus {
     PARTICIPATION_APPLY_SUCCESS(HttpStatus.OK, "봉사신청 성공"),
     PARTICIPATION_GET_SUCCESS(HttpStatus.OK, "봉사자 목록 조회 성공"),
     MY_PAGE_GET_SUCCESS(HttpStatus.OK, "마이페이지 정보 조회 성공"),
+    MY_POST_GET_SUCCESS(HttpStatus.OK, "내 게시글 조회 성공"),
     CHATROOM_LIST_SUCCESS(HttpStatus.OK, "채팅방 목록 조회 성공"),
     CHAT_MESSAGES_SUCCESS(HttpStatus.OK, "채팅 메시지 조회 성공"),
     CHAT_MESSAGES_GET_SUCCESS(HttpStatus.OK, "채팅 메시지 목록 조회 성공"),

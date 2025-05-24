@@ -12,6 +12,7 @@ public class PostResponse {
     private String district;
     private String dong;
     private String username;
+    private String email;
     private String addressDetail;
 
     public PostResponse(Post post) {
@@ -22,6 +23,7 @@ public class PostResponse {
         this.district = post.getAddress().getDistrict();
         this.dong = post.getAddress().getDong();
         this.username = post.getMember().getNickname();
+        this.email = post.getMember().getEmail();
         this.addressDetail = post.getAddress().getAddressDetail();
     }
 }
