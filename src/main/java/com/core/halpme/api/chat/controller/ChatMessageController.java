@@ -4,6 +4,7 @@ package com.core.halpme.api.chat.controller;
 import com.core.halpme.api.chat.dto.ChatMessageDto;
 import com.core.halpme.api.chat.entity.ChatMessage;
 import com.core.halpme.api.chat.entity.MessageReadStatus;
+import com.core.halpme.api.chat.repository.ChatMessageRepository;
 import com.core.halpme.api.chat.repository.MessageReadStatusRepository;
 import com.core.halpme.api.chat.service.ChatMessageService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class ChatMessageController {
     private final ChatMessageService chatMessageService;
     private final SimpMessagingTemplate messagingTemplate;
     private final MessageReadStatusRepository messageReadStatusRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
     @MessageMapping("/message")
     public void sendMessage(@Payload ChatMessageDto message, Message<?> rawMessage, Principal principal) {
@@ -80,9 +82,14 @@ public class ChatMessageController {
 
         String readerEmail = principal.getName();
 
-        //현재 메시지를 포함한, 그 이전 모든 메시지 읽음 처리
-        List<MessageReadStatus> unreadStatuses = messageReadStatusRepository
-                .findAllUnreadByReaderEmailBeforeMessageId(readerEmail, messageId);
+        // messageId로 메시지 조회해서 roomId 추출
+        ChatMessage message = chatMessageRepository.findById(messageId)
+                .orElseThrow(() -> new RuntimeException("메시지를 찾을 수 없습니다."));
+        String roomId = message.getRoomId();
+
+        // roomId 포함해서 안 읽은 메시지 가져오기
+        List<MessageReadStatus> unreadStatuses =
+                messageReadStatusRepository.findAllUnreadByReaderEmailAndRoomIdBeforeMessageId(readerEmail, roomId, messageId);
 
         if (unreadStatuses.isEmpty()) {
             log.info("읽을 메시지가 없습니다.");

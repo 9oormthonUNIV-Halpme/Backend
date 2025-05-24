@@ -18,9 +18,13 @@ public interface MessageReadStatusRepository extends JpaRepository<MessageReadSt
     WHERE m.readerEmail = :readerEmail
       AND m.isRead = false
       AND m.message.id <= :messageId
+      AND m.message.roomId = :roomId
 """)
-    List<MessageReadStatus> findAllUnreadByReaderEmailBeforeMessageId(@Param("readerEmail") String readerEmail,
-                                                                      @Param("messageId") Long messageId);
+    List<MessageReadStatus> findAllUnreadByReaderEmailAndRoomIdBeforeMessageId(
+            @Param("readerEmail") String readerEmail,
+            @Param("roomId") String roomId,
+            @Param("messageId") Long messageId
+    );
 
 
 }
