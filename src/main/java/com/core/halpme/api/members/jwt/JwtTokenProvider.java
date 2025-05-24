@@ -2,9 +2,9 @@ package com.core.halpme.api.members.jwt;
 
 
 import com.core.halpme.api.members.entity.Role;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.core.halpme.common.exception.UnauthorizedException;
+import com.core.halpme.common.response.ErrorStatus;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,12 +29,13 @@ public class JwtTokenProvider {
     }
 
     public String generateToken(String email, Role role) {
+
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expiration);
 
         return Jwts.builder()
                 .setSubject(email) // sub
-                .claim("role", role) // role 추가
+                .claim("role", role.name()) // role 추가
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -63,8 +64,18 @@ public class JwtTokenProvider {
                     .setSigningKey(getSigningKey())
                     .parseClaimsJws(token);
             return true;
-        } catch (JwtException e) {
-            return false;
+        } catch (ExpiredJwtException e) {
+            System.out.println("Expired JWT token: " + e.getMessage());
+            throw new UnauthorizedException(ErrorStatus.UNAUTHORIZED_TOKEN_EXPIRED.getMessage());
+        } catch (MalformedJwtException e) {
+            System.out.println("Malformed JWT token: " + e.getMessage());
+            throw new UnauthorizedException(ErrorStatus.UNAUTHORIZED_INVALID_TOKEN.getMessage());
+        } catch (UnsupportedJwtException e) {
+            System.out.println("Unsupported JWT token: " + e.getMessage());
+            throw new UnauthorizedException(ErrorStatus.UNAUTHORIZED_UNSUPPORTED_TOKEN.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.out.println("Empty JWT token: " + e.getMessage());
+            throw new UnauthorizedException(ErrorStatus.UNAUTHORIZED_EMPTY_TOKEN.getMessage());
         }
     }
 }
