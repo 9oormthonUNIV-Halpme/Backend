@@ -6,6 +6,8 @@ import com.core.halpme.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @AllArgsConstructor
@@ -19,21 +21,27 @@ public class Post extends BaseTimeEntity {
     @Column(name = "post_id")
     private Long id;
 
+    // 게시글 제목
     @Column(name = "title")
     private String title;
 
+    // 게시글 내용
     @Column(name = "content")
     private String content;
 
-    @Column(name = "image_url")
-    private String imageUrl;
+    // 봉사 요청 날짜
+    @Column(name = "request_date")
+    private LocalDate requestDate;
 
+    // 봉사 요청 시작 시각
+    @Column(name = "request_time")
+    private String requestTime;
+
+    // 게시글 봉사 현황 (대기, 완료, 취소)
     @Enumerated(EnumType.STRING)
-    private PostMemberType postMemberType;
+    private PostStatus postStatus = PostStatus.WAITING;
 
-    @Enumerated(EnumType.STRING)
-    private ActivityStatus activityStatus;
-
+    // 주소 (우편번호, 도로명/지번 주소, 상세주소, 찾아오시는 길)
     @Embedded
     private Address address;
 
@@ -49,9 +57,27 @@ public class Post extends BaseTimeEntity {
         }
     }
 
-    public void update(String title, String content, Address address) {
+    public void updateTitle(String title) {
         this.title = title;
+    }
+
+    public void updateContent(String content) {
         this.content = content;
+    }
+
+    public void updateAddress(Address address) {
         this.address = address;
+    }
+
+    public void updateRequestDate(LocalDate requestDate) {
+        this.requestDate = requestDate;
+    }
+
+    public void updateRequestTime(String requestTime) {
+        this.requestTime = requestTime;
+    }
+
+    public void updateActivityStatus(PostStatus postStatus) {
+        this.postStatus = postStatus;
     }
 }

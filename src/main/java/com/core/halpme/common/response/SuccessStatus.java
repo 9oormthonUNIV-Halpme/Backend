@@ -15,8 +15,8 @@ public enum SuccessStatus {
     LOGIN_SUCCESS(HttpStatus.OK, "로그인 성공"),
     LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃 성공"),
     MEMBER_GET_SUCCESS(HttpStatus.OK, "회원 정보 조회 성공"),
-    MEMBER_WITHDRAW_SUCCESS(HttpStatus.OK, "회원탈퇴 성공"),
-    CURRENT_MEMBER_GET_SUCCESS(HttpStatus.OK, "현재 사용자 정보 조회 성공"),
+    MEMBER_RESIGN_DELETE_SUCCESS(HttpStatus.OK, "회원탈퇴 성공"),
+    MEMBER_INFO_GET_SUCCESS(HttpStatus.OK, "현재 사용자 정보 조회 성공"),
     ARTICLE_GET_SUCCESS(HttpStatus.OK,"게시글 조회 성공"),
     ARTICLE_UPDATE_SUCCESS(HttpStatus.OK,"게시글 수정 성공"),
     MEMBER_SIGNUP_SUCCESS(HttpStatus.OK,"회원가입 성공"),
@@ -24,10 +24,11 @@ public enum SuccessStatus {
     PARTICIPATION_APPLY_SUCCESS(HttpStatus.OK, "봉사신청 성공"),
     PARTICIPATION_GET_SUCCESS(HttpStatus.OK, "봉사자 목록 조회 성공"),
     MY_PAGE_GET_SUCCESS(HttpStatus.OK, "마이페이지 정보 조회 성공"),
-    MY_POST_GET_SUCCESS(HttpStatus.OK, "내 게시글 조회 성공"),
+    MY_POST_LIST_GET_SUCCESS(HttpStatus.OK, "내 게시글 조회 성공"),
     CHATROOM_LIST_SUCCESS(HttpStatus.OK, "채팅방 목록 조회 성공"),
     CHAT_MESSAGES_SUCCESS(HttpStatus.OK, "채팅 메시지 조회 성공"),
     CHAT_MESSAGES_GET_SUCCESS(HttpStatus.OK, "채팅 메시지 목록 조회 성공"),
+
     /**
      * 201 CREATED
      */

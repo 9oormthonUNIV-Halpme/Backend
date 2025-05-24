@@ -39,29 +39,29 @@ public class SecurityConfig {
                 .headers(headers -> headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
                 )
-                .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션을 사용하지 않도록 설정 (JWT는 무상태)
-                .authorizeHttpRequests(auth -> auth // 요청별 인증/인가 설정
-                        .requestMatchers("/api/v1/login","/api/v1/signup").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll()
+                .sessionManagement(config -> config
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/",                  // 홈
-                                "/login",             // 로그인 폼
-                                "/register",          // 회원가입
-                                "/css/**", "/js/**", "/images/**",  // 정적 리소스
-                                "/favicon.ico",       // 파비콘
-                                "/h2-console/**",     // H2 콘솔
-                                "/error",// 에러 페이지
-                                "/chat/inbox/**","/ws/**"
+                                "/api/v1/auth/**",                      // 회원/인증 엔드포인트  (개발 환경 임시)
+                                "/api/v1/posts/**"                      // 봉사 신청글 엔드포인트 (개발 환경 임시)
                         ).permitAll()
                         .requestMatchers(
+                                "/",                                    // 인덱스
+                                "/login",                               // 로그인 폼
+                                "/signup",                              // 회원가입
+                                "/css/**", "/js/**", "/images/**",  // 정적 리소스
+                                "/favicon.ico",                         // 파비콘
+                                "/error",                               // 에러 페이지
+                                "/chat/inbox/**","/ws/**"             // 채팅, 웹소켓
+                        ).permitAll()
+                        .requestMatchers(
+                                // Swagger UI
                                 "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/api/v3/api-docs",
                                 "/api/v3/api-docs/**",
-                                "/api/v3/api-docs/swagger-config",
+                                "/swagger-ui/**",
                                 "/api/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/api/swagger-ui.html",
+                                "/swagger-resources/**",
                                 "/api/swagger-resources/**",
                                 "/api/webjars/**"
                         ).permitAll()
