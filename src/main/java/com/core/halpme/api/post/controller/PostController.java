@@ -6,6 +6,7 @@ import com.core.halpme.api.post.repository.PostRepository;
 import com.core.halpme.api.post.service.PostService;
 import com.core.halpme.common.response.ApiResponse;
 import com.core.halpme.common.response.SuccessStatus;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,8 @@ public class PostController {
     private final PostService postService;
 
     //게시물 생성
+    @Operation(summary = "게시물 생성", description = "게시물 생성")
     @PostMapping
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<PostResponse>> createPost(@Valid @RequestBody PostCreateRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
@@ -37,8 +38,8 @@ public class PostController {
     }
 
     //시, 구, 동 기준으로 게시물 조회
+    @Operation(summary = "게시물 조회", description = "시, 구, 동 기준으로 게시물 조회")
     @GetMapping
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<List<PostResponse>>> getPostByAddress(
             @RequestParam String city,
             @RequestParam String district,
@@ -52,4 +53,37 @@ public class PostController {
         return ApiResponse.success(SuccessStatus.ARTICLE_GET_SUCCESS, posts);
     }
 
+    //게시글 조회
+    @GetMapping("/my/{postId}")
+    public ResponseEntity<ApiResponse<PostResponse>> getMyPost(@PathVariable Long postId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        PostResponse postResponse = postService.getMyPost(email, postId);
+        return ApiResponse.success(SuccessStatus.MY_POST_GET_SUCCESS, postResponse);
+    }
+
+    //게시물 수정
+    @Operation(summary = "게시물 수정", description = "게시물 수정")
+    @PutMapping("/{postId}")
+    public ResponseEntity<ApiResponse<PostResponse>> updatePost(
+            @PathVariable Long postId,
+            @Valid @RequestBody PostCreateRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName(); //JWT에서 가져옴
+
+        PostResponse response = postService.updatePost(postId, email, request);
+        return ApiResponse.success(SuccessStatus.ARTICLE_UPDATE_SUCCESS, response);
+    }
+
+    //게시물 삭제
+    @Operation(summary = "게시물 삭제", description = "게시물 삭제")
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable Long postId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        postService.deletePost(postId, email);
+        return ApiResponse.successOnly(SuccessStatus.ARTICLE_DELETE_SUCCESS);
+    }
 }
