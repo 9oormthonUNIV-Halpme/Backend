@@ -1,10 +1,9 @@
 package com.core.halpme.api.members.service;
 
-import com.core.halpme.api.members.dto.LoginRequest;
-import com.core.halpme.api.members.dto.RegisterRequest;
+import com.core.halpme.api.members.dto.LoginRequestDto;
+import com.core.halpme.api.members.dto.RegisterRequestDto;
 import com.core.halpme.api.members.entity.Address;
 import com.core.halpme.api.members.entity.Member;
-import com.core.halpme.api.members.entity.Role;
 import com.core.halpme.api.members.jwt.JwtTokenProvider;
 import com.core.halpme.api.members.repository.MemberRepository;
 import com.core.halpme.common.exception.BaseException;
@@ -28,7 +27,7 @@ public class MemberService {
 
 
     @Transactional
-    public void signup(RegisterRequest request) {
+    public void signup(RegisterRequestDto request) {
         if (memberRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new BaseException(ErrorStatus.BAD_REQUEST_DUPLICATE_EMAIL.getHttpStatus(),
                     ErrorStatus.BAD_REQUEST_DUPLICATE_EMAIL.getMessage());
@@ -67,7 +66,7 @@ public class MemberService {
 
 
     @Transactional(readOnly = true)
-    public Map<String, Object> login(LoginRequest request) {
+    public Map<String, Object> login(LoginRequestDto request) {
         // id = email, pw = password
 
         Member member = memberRepository.findByEmail(request.getEmail())

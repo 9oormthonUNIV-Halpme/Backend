@@ -9,6 +9,7 @@ import com.core.halpme.api.post.entity.Post;
 import com.core.halpme.api.post.repository.PostRepository;
 
 import com.core.halpme.common.exception.NotFoundException;
+import com.core.halpme.common.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +35,8 @@ public class PostService {
                 .city(request.getCity())
                 .district(request.getDistrict())
                 .dong(request.getDong())
+                .addressDetail(request.getAddressDetail())
+
                 .build();
 
         Post post = Post.builder()
@@ -62,5 +65,45 @@ public class PostService {
 
                 //위에서 변환된 DTO를 다시 리스트화 시켜서 반환
                 .collect(Collectors.toList());
+    }
+
+    //게시물 수정
+    @Transactional
+    public PostResponse updatePost(Long postId, String email, PostCreateRequest request) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException("게시글을 찾을 수 없습니다."));
+
+        // 본인 여부 확인(jwt)
+        if(!post.getMember().getEmail().equals(email)) {
+            throw new UnauthorizedException("게시글을 수정할 권한이 없습니다.");
+        }
+
+        //Address 객체를 먼저 빌더로 생성
+        Address address = Address.builder()
+                .city(request.getCity())
+                .district(request.getDistrict())
+                .dong(request.getDong())
+                .addressDetail(request.getAddressDetail())
+                .build();
+
+        //수정 내용 반영
+        post.update(request.getTitle(), request.getContent(), address);
+
+        postRepository.save(post);
+
+        return new PostResponse(post);
+    }
+
+    //게시물 삭제
+    @Transactional
+    public void deletePost(Long postId, String email) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException("게시글을 찾을 수 없습니다."));
+        if(!post.getMember().getEmail().equals(email)) {
+            throw new UnauthorizedException("게시글을 삭제할 권한이 없습니다.");
+        }
+
+
+        postRepository.delete(post);
     }
 }
