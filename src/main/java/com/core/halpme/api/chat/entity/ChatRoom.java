@@ -37,6 +37,7 @@ public class ChatRoom extends BaseTimeEntity {
     @JoinTable(name = "ChatRoom_Members",
             joinColumns = @JoinColumn(name = "chatRoomId"),
             inverseJoinColumns = @JoinColumn(name = "userId"))
+    @Builder.Default
     private Set<Member> chatRoomMembers = new HashSet<>();
 
 
