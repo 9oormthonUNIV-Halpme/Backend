@@ -48,4 +48,10 @@ public class Post extends BaseTimeEntity {
             member.getPosts().add(this);
         }
     }
+
+    public void update(String title, String content, Address address) {
+        this.title = title;
+        this.content = content;
+        this.address = address;
+    }
 }

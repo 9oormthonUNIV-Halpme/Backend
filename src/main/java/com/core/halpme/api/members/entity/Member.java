@@ -58,7 +58,7 @@ public class Member extends BaseTimeEntity {
     // 멤버 권한 설정 메서드
     public Member authorizeMember() {
         return this.toBuilder()
-                .role(Role.MEMBER)
+                .role(Role.ROLE_MEMBER)
                 .build();
     }
 
