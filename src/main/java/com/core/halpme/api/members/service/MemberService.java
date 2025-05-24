@@ -42,11 +42,11 @@ public class MemberService {
             throw new BaseException(HttpStatus.BAD_REQUEST, ErrorStatus.BAD_REQUEST_DUPLICATE_PHONE.getMessage());
         }
 
-        Address address = new Address();
-        address.setAddressDetail(request.getAddressDetail());
-        address.setCity(request.getCity());
-        address.setDistrict(request.getDistrict());
-        address.setDong(request.getDong());
+        Address address = Address.builder()
+                .city(request.getCity())
+                .district(request.getDistrict())
+                .dong(request.getDong())
+                .build();
 
         Member member = Member.builder()
                 .nickname(request.getNickname())

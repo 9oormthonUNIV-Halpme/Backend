@@ -18,7 +18,6 @@ public class PostResponse {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-
         this.city = post.getAddress().getCity();
         this.district = post.getAddress().getDistrict();
         this.dong = post.getAddress().getDong();

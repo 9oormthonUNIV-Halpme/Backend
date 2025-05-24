@@ -1,5 +1,6 @@
 package com.core.halpme.api.post.dto;
 
+import com.core.halpme.api.members.entity.Address;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
