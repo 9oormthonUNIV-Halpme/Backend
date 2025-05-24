@@ -40,12 +40,15 @@ public class ChatRoom extends BaseTimeEntity {
     @Builder.Default
     private Set<Member> chatRoomMembers = new HashSet<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_maker_id")
+    private Member roomMaker;
 
-    public static ChatRoom create() {
+    public static ChatRoom create(Member roomMaker){
 
         ChatRoom room = new ChatRoom();
         room.setId(UUID.randomUUID().toString());
-
+        room.setRoomMaker(roomMaker);
         return room;
     }
 

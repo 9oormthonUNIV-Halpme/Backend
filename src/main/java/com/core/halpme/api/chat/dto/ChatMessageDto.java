@@ -22,7 +22,7 @@ public class ChatMessageDto {
     private String roomId;
     private String sender;
     private String message;
-
+    private LocalDateTime createdAt;
 
 
     /* Dto -> Entity */
@@ -40,7 +40,8 @@ public class ChatMessageDto {
                 chatMessage.getId(),
                 chatMessage.getRoomId(),
                 chatMessage.getSender(),
-                chatMessage.getMessage()
+                chatMessage.getMessage(),
+                chatMessage.getCreatedAt()
         );
     }
 }
