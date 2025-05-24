@@ -7,13 +7,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import static org.springframework.aot.generate.ValueCodeGenerator.withDefaults;
 
 @Configuration // 설정 클래스로 인식
 @EnableWebSecurity // Spring Security 활성화
@@ -33,11 +33,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .httpBasic(httpBasic -> httpBasic.disable())
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers
-                        .frameOptions(frame -> frame.disable())
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
                 )
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션을 사용하지 않도록 설정 (JWT는 무상태)
                 .authorizeHttpRequests(auth -> auth // 요청별 인증/인가 설정
@@ -50,14 +50,20 @@ public class SecurityConfig {
                                 "/css/**", "/js/**", "/images/**",  // 정적 리소스
                                 "/favicon.ico",       // 파비콘
                                 "/h2-console/**",     // H2 콘솔
-                                "/error"              // 에러 페이지
+                                "/error",// 에러 페이지
+                                "/chat/inbox/**","/ws/**"
                         ).permitAll()
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
+                                "/api/v3/api-docs",
+                                "/api/v3/api-docs/**",
+                                "/api/v3/api-docs/swagger-config",
+                                "/api/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/swagger-resources/**",
-                                "/webjars/**"
+                                "/api/swagger-ui.html",
+                                "/api/swagger-resources/**",
+                                "/api/webjars/**"
                         ).permitAll()
                         .anyRequest().authenticated() // 나머지 요청은 인증 필요
                 )

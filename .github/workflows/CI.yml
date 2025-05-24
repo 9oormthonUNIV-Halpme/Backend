@@ -43,7 +43,8 @@ jobs:
         run: |
           mkdir -p src/main/resources
           echo "application.yml 생성 시작..."
-          echo "${{ secrets.APPLICATION_YML }}" > src/main/resources/application.yml
+          echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > src/main/resources/application.yml
+          find src
 
 #          echo "${{ secrets.APPLICATION_JWT_YML }}" > src/main/resources/application-jwt.yml
 #          echo "${{ secrets.APPLICATION_OAUTH2_YML }}" > src/main/resources/application-oauth.yml

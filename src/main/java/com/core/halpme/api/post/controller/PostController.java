@@ -63,6 +63,7 @@ public class PostController {
         return ApiResponse.success(SuccessStatus.MY_POST_GET_SUCCESS, postResponse);
     }
 
+
     //게시물 수정
     @Operation(summary = "게시물 수정", description = "게시물 수정")
     @PutMapping("/{postId}")
