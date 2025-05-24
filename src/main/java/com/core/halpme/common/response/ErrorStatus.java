@@ -19,6 +19,7 @@ public enum ErrorStatus {
     BAD_REQUEST_INVALID_IMAGE_TYPE(HttpStatus.BAD_REQUEST,"이미지 확장자 업로드만 가능합니다"),
     BAD_REQUEST_DUPLICATE_PHONE(HttpStatus.BAD_REQUEST, "이미 사용 중인 전화번호입니다."),
     BAD_REQUEST_INVALID_EMAIL(HttpStatus.BAD_REQUEST, "잘못된 이메일입니다."),
+    BAD_REQUEST_POST_WRITER_NOT_SAME_USER(HttpStatus.BAD_REQUEST, "작성자와 요청자가 다릅니다."),
 
     /**
      * 401 UNAUTHORIZED
@@ -28,6 +29,8 @@ public enum ErrorStatus {
     UNAUTHORIZED_INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
     UNAUTHORIZED_UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED, "지원되지 않는 토큰입니다."),
     UNAUTHORIZED_EMPTY_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 비어있습니다."),
+    UNAUTHORIZED_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
+    UNAUTHORIZED_EMAIL_OR_PASSWORD(HttpStatus.UNAUTHORIZED, "이메일 혹은 비밀번호를 다시 확인하세요."),
 
     /**
      * 403 FORBIDDEN
@@ -43,7 +46,6 @@ public enum ErrorStatus {
     /**
      * 500 SERVER_ERROR
      */
-    INTERNAL_SERVER_ERROR_UPLOAD_PROFILE(HttpStatus.INTERNAL_SERVER_ERROR, "프로필 사진이 변경되지 않았습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다."),
 
 
