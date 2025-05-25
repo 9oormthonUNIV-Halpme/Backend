@@ -1,5 +1,6 @@
 package com.core.halpme.api.post.dto;
 
+import com.core.halpme.api.members.dto.AddressDto;
 import com.core.halpme.api.members.entity.Address;
 import com.core.halpme.api.post.entity.Post;
 import com.core.halpme.api.post.entity.PostStatus;
@@ -18,7 +19,8 @@ public class MyPostListResponseDto {
 
     private Long postId;
     private String title;
-    private Address address;
+    private String nickname;
+    private AddressDto address;
     private LocalDate requestDate;
     private String requestTime;
     private PostStatus postStatus;
@@ -28,7 +30,8 @@ public class MyPostListResponseDto {
         return MyPostListResponseDto.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
-                .address(post.getAddress())
+                .nickname(post.getMember().getNickname())
+                .address(AddressDto.toDto(post.getAddress()))
                 .requestDate(post.getRequestDate())
                 .requestTime(post.getRequestTime())
                 .postStatus(post.getPostStatus())

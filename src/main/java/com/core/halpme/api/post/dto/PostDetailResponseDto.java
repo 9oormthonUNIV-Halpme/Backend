@@ -1,5 +1,6 @@
 package com.core.halpme.api.post.dto;
 
+import com.core.halpme.api.members.dto.AddressDto;
 import com.core.halpme.api.members.entity.Address;
 import com.core.halpme.api.post.entity.Post;
 import lombok.AllArgsConstructor;
@@ -18,8 +19,9 @@ public class PostDetailResponseDto {
 
     private Long postId;
     private String title;
+    private String nickname;
     private String content;
-    private Address address;
+    private AddressDto address;
     private LocalDate requestDate;
     private String requestTime;
     private String date;
@@ -31,8 +33,9 @@ public class PostDetailResponseDto {
         return PostDetailResponseDto.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
+                .nickname(post.getMember().getNickname())
                 .content(post.getContent())
-                .address(post.getAddress())
+                .address(AddressDto.toDto(post.getAddress()))
                 .requestDate(post.getRequestDate())
                 .requestTime(post.getRequestTime())
                 .date(post.getUpdatedAt().format(formatter))
