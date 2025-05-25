@@ -1,4 +1,4 @@
-package com.core.halpme.api.aws.s3;
+package com.core.halpme.api.aws.s3.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.text.RandomStringGenerator;
@@ -28,7 +28,7 @@ public class S3Service {
     @Value("${cloud.aws.s3.domain}")
     private String domain;
 
-    public List<String> uploadPostImages(String memberIdentifier, List<MultipartFile> files) throws IOException {
+    public List<String> uploadChatMessageImages(String memberIdentifier, List<MultipartFile> files) throws IOException {
 
         String dir = "post-images";
         List<String> imageUrls = new ArrayList<>();
@@ -55,7 +55,7 @@ public class S3Service {
             // 파일명: {원파일이름}_{currentDateTime}{확장자}
             String fileName = originalFilename + "_" + currentDateTime + extension;
 
-            // 파일경로: post-images/{memberId}/{랜덤문자(16자리)/파일명
+            // 파일경로: post-images/{memberEmailPrefix}/{랜덤문자(16자리)/파일명
             String fileKey = dir + "/" + memberIdentifier + "/" + randomString + "/" + fileName;
 
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
