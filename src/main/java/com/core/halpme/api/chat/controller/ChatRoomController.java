@@ -12,6 +12,7 @@ import com.core.halpme.api.members.jwt.SecurityUtil;
 import com.core.halpme.common.response.ApiResponse;
 import com.core.halpme.common.response.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Tag(name = "Chatting", description = "Chatting 관련 API 입니다.")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/chatRoom/")
