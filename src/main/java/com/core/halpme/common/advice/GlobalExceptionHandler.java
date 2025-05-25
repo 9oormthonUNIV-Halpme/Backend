@@ -77,6 +77,4 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.fail(ErrorStatus.NOT_FOUND_RESOURCE.getStatusCode(),
                         ErrorStatus.NOT_FOUND_RESOURCE.getMessage()));
     }
-
-
 }

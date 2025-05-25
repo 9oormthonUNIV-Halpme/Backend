@@ -6,9 +6,7 @@ import com.core.halpme.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -23,22 +21,27 @@ public class Post extends BaseTimeEntity {
     @Column(name = "post_id")
     private Long id;
 
+    // 게시글 제목
     @Column(name = "title")
     private String title;
 
-    @Column(name = "content", columnDefinition = "TEXT")
+    // 게시글 내용
+    @Column(name = "content")
     private String content;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<PostImage> images = new ArrayList<>();
+    // 봉사 요청 날짜
+    @Column(name = "request_date")
+    private LocalDate requestDate;
 
+    // 봉사 요청 시작 시각
+    @Column(name = "request_time")
+    private String requestTime;
+
+    // 게시글 봉사 현황 (대기, 완료, 취소)
     @Enumerated(EnumType.STRING)
-    private PostMemberType postMemberType;
+    private PostStatus postStatus = PostStatus.WAITING;
 
-    @Enumerated(EnumType.STRING)
-    private ActivityStatus activityStatus;
-
+    // 주소 (우편번호, 도로명/지번 주소, 상세주소, 찾아오시는 길)
     @Embedded
     private Address address;
 
@@ -54,38 +57,27 @@ public class Post extends BaseTimeEntity {
         }
     }
 
-    // Post 이미지 추가 메서드
-    public void addImages(List<String> imageUrls) {
-        for (String url : imageUrls) {
-            PostImage postImage = PostImage.builder()
-                    .imageUrl(url)
-                    .post(this)
-                    .build();
-            this.images.add(postImage);
-        }
+    public void updateTitle(String title) {
+        this.title = title;
     }
 
-    // Post 이미지 삭제 메서드 (양방향 연관관계 해제)
-    public void removeImage(PostImage image) {
-        this.images.remove(image);
-        image.setPost(null);
+    public void updateContent(String content) {
+        this.content = content;
     }
 
-    // 이미지 리스트 조회 시 불변 객체 리스트 반환
-    public List<PostImage> getImages() {
-        return Collections.unmodifiableList(this.images);
+    public void updateAddress(Address address) {
+        this.address = address;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Post post = (Post) obj;
-        return id != null && id.equals(post.id);
+    public void updateRequestDate(LocalDate requestDate) {
+        this.requestDate = requestDate;
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
+    public void updateRequestTime(String requestTime) {
+        this.requestTime = requestTime;
+    }
+
+    public void updateActivityStatus(PostStatus postStatus) {
+        this.postStatus = postStatus;
     }
 }

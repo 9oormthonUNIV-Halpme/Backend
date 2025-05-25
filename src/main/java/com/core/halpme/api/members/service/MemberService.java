@@ -1,13 +1,15 @@
 package com.core.halpme.api.members.service;
 
-import com.core.halpme.api.members.dto.LoginRequest;
-import com.core.halpme.api.members.dto.RegisterRequest;
-import com.core.halpme.api.members.entity.Address;
+import com.core.halpme.api.members.dto.LoginRequestDto;
+import com.core.halpme.api.members.dto.MemberInfoResponseDto;
+import com.core.halpme.api.members.dto.SignupRequestDto;
 import com.core.halpme.api.members.entity.Member;
-import com.core.halpme.api.members.entity.Role;
 import com.core.halpme.api.members.jwt.JwtTokenProvider;
 import com.core.halpme.api.members.repository.MemberRepository;
+import com.core.halpme.api.post.repository.PostRepository;
 import com.core.halpme.common.exception.BaseException;
+import com.core.halpme.common.exception.NotFoundException;
+import com.core.halpme.common.exception.UnauthorizedException;
 import com.core.halpme.common.response.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,14 +23,14 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class MemberService {
+
     private final MemberRepository memberRepository;
+    private final PostRepository postRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
-
-
     @Transactional
-    public void signup(RegisterRequest request) {
+    public void signupMember(SignupRequestDto request) {
         if (memberRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new BaseException(ErrorStatus.BAD_REQUEST_DUPLICATE_EMAIL.getHttpStatus(),
                     ErrorStatus.BAD_REQUEST_DUPLICATE_EMAIL.getMessage());
@@ -43,41 +45,25 @@ public class MemberService {
             throw new BaseException(HttpStatus.BAD_REQUEST, ErrorStatus.BAD_REQUEST_DUPLICATE_PHONE.getMessage());
         }
 
-        Address address = Address.builder()
-                .city(request.getCity())
-                .district(request.getDistrict())
-                .dong(request.getDong())
-                .build();
-
-        Member member = Member.builder()
-                .nickname(request.getNickname())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .phoneNumber(request.getPhoneNumber())
-                .age(request.getAge())
-                .note(request.getSpecialNote())
-                .gender(request.getGender())
-                .memberType(request.getMemberType())
-                .role(request.getRole())
-                .address(address)
-                .build();
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        Member member = request.toEntity(encodedPassword);
 
         memberRepository.save(member);
     }
 
-
     @Transactional(readOnly = true)
-    public Map<String, Object> login(LoginRequest request) {
+    public Map<String, Object> loginMember(LoginRequestDto request) {
+
         // id = email, pw = password
 
         Member member = memberRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("이메일 혹은 비밀번호를 다시 확인하세요."));
+                .orElseThrow(() -> new UnauthorizedException(ErrorStatus.UNAUTHORIZED_EMAIL_OR_PASSWORD.getMessage()));
 
         if (!passwordEncoder.matches(request.getPw(), member.getPassword())) {
-            throw new IllegalArgumentException("이메일 혹은 비밀번호를 다시 확인하세요.");
+            throw new UnauthorizedException(ErrorStatus.UNAUTHORIZED_EMAIL_OR_PASSWORD.getMessage());
         }
 
-        String token = jwtTokenProvider.generateToken(member.getEmail(),member.getRole());
+        String token = jwtTokenProvider.generateToken(member.getEmail(), member.getRole());
 
         Map<String, Object> response = new HashMap<>();
         response.put("token", token);
@@ -86,4 +72,31 @@ public class MemberService {
         return response;
     }
 
+    @Transactional(readOnly = true)
+    public void resignMember(String email, String password) {
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.NOT_FOUND_USER.getMessage()));
+
+        if (!passwordEncoder.matches(password, member.getPassword())) {
+            throw new UnauthorizedException(ErrorStatus.UNAUTHORIZED_PASSWORD.getMessage());
+        }
+
+        // Soft Delete
+        // member.resign();
+
+        // Hard Delete
+        postRepository.deleteAllByMember(member);
+        memberRepository.delete(member);
+    }
+
+    @Transactional(readOnly = true)
+    public MemberInfoResponseDto getMyInfo(String email) {
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.NOT_FOUND_USER.getMessage()));
+
+
+        return MemberInfoResponseDto.toDto(member);
+    }
 }

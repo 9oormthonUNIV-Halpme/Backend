@@ -56,7 +56,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         }
 
         // 새로 생성
-        ChatRoom newRoom = ChatRoom.create();
+        ChatRoom newRoom = ChatRoom.create(roomMaker);
         newRoom.addMembers(roomMaker, guest);
         chatRoomRepository.save(newRoom);
 

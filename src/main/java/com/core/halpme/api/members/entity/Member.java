@@ -18,7 +18,7 @@ public class Member extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "member_id")
     private Long id;
 
     @Column(name = "nickname", nullable = false, unique = true, length = 20)
@@ -33,7 +33,7 @@ public class Member extends BaseTimeEntity {
     @Column(name = "phone_number", nullable = false, unique = true, length = 15)
     private String phoneNumber;
 
-    @Column(name = "age", nullable = false)
+    @Column(name = "age")
     private int age;
 
     @Enumerated(EnumType.STRING)
@@ -41,9 +41,6 @@ public class Member extends BaseTimeEntity {
 
     @Column(name = "note")
     private String note;
-
-    @Enumerated(EnumType.STRING)
-    private MemberType memberType;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -58,15 +55,18 @@ public class Member extends BaseTimeEntity {
     // 멤버 권한 설정 메서드
     public Member authorizeMember() {
         return this.toBuilder()
-                .role(Role.MEMBER)
+                .role(Role.ROLE_MEMBER)
                 .build();
     }
 
     // 멤버 닉네임 변경 메서드
-    public Member updateNickname(String updatedNickname) {
-        return this.toBuilder()
-                .nickname(updatedNickname)
-                .build();
+    public void updatePhoneNumber(String updatedPhoneNumber) {
+        this.phoneNumber = updatedPhoneNumber;
+    }
+
+    // 멤버 주소 변경 메서드
+    public void updateAddress(Address updatedAddress) {
+        this.address = updatedAddress;
     }
 
     // posts 필드에 post 추가 메서드

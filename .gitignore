@@ -4,6 +4,7 @@
 application.yml
 .idea
 logs
+*.sql
 
 ### Git ###
 # Created by git for backups. To disable backups in Git:

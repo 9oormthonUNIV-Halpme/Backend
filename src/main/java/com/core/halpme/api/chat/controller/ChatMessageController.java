@@ -4,6 +4,7 @@ package com.core.halpme.api.chat.controller;
 import com.core.halpme.api.chat.dto.ChatMessageDto;
 import com.core.halpme.api.chat.entity.ChatMessage;
 import com.core.halpme.api.chat.entity.MessageReadStatus;
+import com.core.halpme.api.chat.repository.ChatMessageRepository;
 import com.core.halpme.api.chat.repository.MessageReadStatusRepository;
 import com.core.halpme.api.chat.service.ChatMessageService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 
 
@@ -26,6 +28,7 @@ public class ChatMessageController {
     private final ChatMessageService chatMessageService;
     private final SimpMessagingTemplate messagingTemplate;
     private final MessageReadStatusRepository messageReadStatusRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
     @MessageMapping("/message")
     public void sendMessage(@Payload ChatMessageDto message, Message<?> rawMessage, Principal principal) {
@@ -71,22 +74,36 @@ public class ChatMessageController {
                 }
             }
         }
-        System.out.println(principal);
+
         if (principal == null) {
             log.warn("읽음 처리 실패: principal이 null입니다.");
             return;
         }
+
         String readerEmail = principal.getName();
 
-        MessageReadStatus status = messageReadStatusRepository
-                .findByMessageIdAndReaderEmail(messageId, readerEmail)
-                .orElseThrow(() -> new RuntimeException("읽음 상태를 찾을 수 없습니다."));
+        // messageId로 메시지 조회해서 roomId 추출
+        ChatMessage message = chatMessageRepository.findById(messageId)
+                .orElseThrow(() -> new RuntimeException("메시지를 찾을 수 없습니다."));
+        String roomId = message.getRoomId();
 
-        if (!status.isRead()) {
-            status.setRead(true);
-            messageReadStatusRepository.save(status);
+        // roomId 포함해서 안 읽은 메시지 가져오기
+        List<MessageReadStatus> unreadStatuses =
+                messageReadStatusRepository.findAllUnreadByReaderEmailAndRoomIdBeforeMessageId(readerEmail, roomId, messageId);
+
+        if (unreadStatuses.isEmpty()) {
+            log.info("읽을 메시지가 없습니다.");
+            return;
         }
+
+        for (MessageReadStatus status : unreadStatuses) {
+            status.setRead(true);
+        }
+        messageReadStatusRepository.saveAll(unreadStatuses);
+
+        log.info("총 {}개의 메시지를 읽음 처리했습니다.", unreadStatuses.size());
     }
+
 
 
 

@@ -3,18 +3,22 @@ package com.core.halpme.api.post.service;
 import com.core.halpme.api.members.entity.Address;
 import com.core.halpme.api.members.entity.Member;
 import com.core.halpme.api.members.repository.MemberRepository;
-import com.core.halpme.api.post.dto.PostCreateRequest;
-import com.core.halpme.api.post.dto.PostResponse;
+import com.core.halpme.api.post.dto.MyPostListResponseDto;
+import com.core.halpme.api.post.dto.PostCreateRequestDto;
+import com.core.halpme.api.post.dto.PostDetailResponseDto;
+import com.core.halpme.api.post.dto.PostTotalListResponseDto;
 import com.core.halpme.api.post.entity.Post;
 import com.core.halpme.api.post.repository.PostRepository;
 
 import com.core.halpme.common.exception.NotFoundException;
+import com.core.halpme.common.exception.UnauthorizedException;
+import com.core.halpme.common.response.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -23,44 +27,92 @@ public class PostService {
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
 
-    // 게시물 생성시
+    // 봉사 신청글 생성
     @Transactional
-    public PostResponse createPost(String email, PostCreateRequest request) {
+    public void createPost(String email, PostCreateRequestDto request) throws NotFoundException, UnauthorizedException {
 
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("해당 사람은 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.NOT_FOUND_USER.getMessage()));
 
-        Address address = Address.builder()
-                .city(request.getCity())
-                .district(request.getDistrict())
-                .dong(request.getDong())
-                .build();
+        Address address = request.getAddress();
 
         Post post = Post.builder()
-                .member(member)
                 .title(request.getTitle())
                 .content(request.getContent())
+                .requestDate(request.getRequestDate())
+                .requestTime(request.getRequestTime())
                 .address(address)
+                .member(member)
                 .build();
 
         postRepository.save(post);
-
-        return new PostResponse(post);
     }
 
-    //시, 구, 동 기준으로 게시물 조회
+    // 내 봉사 신청글 전체 조회
     @Transactional(readOnly = true)
-    public List<PostResponse> findPostByAddress(String city, String district, String dong, String email) {
+    public List<MyPostListResponseDto> getMyPostList(String email) {
 
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("해당 이메일로 회원을 찾을 수 없습니다."));
-        List<Post> posts = postRepository.findByAddress_CityAndAddress_DistrictAndAddress_DongAndMember_Email(city, district, dong, email);
+        List<Post> myPosts = postRepository.findPostByMemberEmail(email);
 
-        // Entity -> DTO 변환해줘서 전환!
-        return posts.stream()
-                .map(PostResponse::new)
+        return myPosts.stream()
+                .map(MyPostListResponseDto::toDto)
+                .toList();
+    }
 
-                //위에서 변환된 DTO를 다시 리스트화 시켜서 반환
-                .collect(Collectors.toList());
+    // 전체 봉사 신청글 조회
+    public List<PostTotalListResponseDto> getTotalPostList() {
+
+        List<Post> posts = postRepository.findAll();
+
+        List<Post> sortedPosts = posts.stream()
+                .sorted((p1, p2) -> p2.getCreatedAt().compareTo(p1.getCreatedAt()))
+                .toList();
+
+        return sortedPosts.stream()
+                .map(PostTotalListResponseDto::toDto)
+                .toList();
+    }
+
+    // 봉사 신청글 상세 조회
+    public PostDetailResponseDto getPostDetail(Long postId) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.NOT_FOUND_RESOURCE.getMessage()));
+
+        return PostDetailResponseDto.toDto(post);
+    }
+
+    // 봉사 신청글 수정
+    @Transactional
+    public PostDetailResponseDto updatePost(Long postId, String email, PostCreateRequestDto request) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.NOT_FOUND_RESOURCE.getMessage()));
+
+        if(!post.getMember().getEmail().equals(email)) {
+            throw new UnauthorizedException(ErrorStatus.BAD_REQUEST_POST_WRITER_NOT_SAME_USER.getMessage());
+        }
+
+        Address address = request.getAddress();
+
+        post.updateTitle(request.getTitle());
+        post.updateContent(request.getContent());
+        post.updateAddress(address);
+
+        return PostDetailResponseDto.toDto(post);
+    }
+
+    // 봉사 신청글 삭제
+    @Transactional
+    public void deletePost(Long postId, String email) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.NOT_FOUND_RESOURCE.getMessage()));
+
+        if(!post.getMember().getEmail().equals(email)) {
+            throw new UnauthorizedException(ErrorStatus.BAD_REQUEST_POST_WRITER_NOT_SAME_USER.getMessage());
+        }
+
+        postRepository.delete(post);
     }
 }

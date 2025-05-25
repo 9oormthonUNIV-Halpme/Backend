@@ -1,11 +1,16 @@
 package com.core.halpme.api.post.repository;
 
+import com.core.halpme.api.members.entity.Member;
 import com.core.halpme.api.post.entity.Post;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
+public interface PostRepository extends JpaRepository<Post, Long> {
 
-// Post의 Address 기준으로 검색
-public interface PostRepository extends org.springframework.data.jpa.repository.JpaRepository<Post, Long> {
-    List<Post> findByAddress_CityAndAddress_DistrictAndAddress_DongAndMember_Email(String city, String district, String dong, String email);
+    List<Post> findPostByMemberEmail(String memberEmail);
+
+    void deleteAllByMember(Member member);
 }
