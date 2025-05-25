@@ -71,7 +71,7 @@ public class MemberController {
             summary = "내 정보 조회",
             description = "현재 로그인된 사용자의 정보를 조회합니다."
     )
-    @GetMapping("/members/me")
+    @GetMapping("/members/my-page")
     public ResponseEntity<ApiResponse<MemberInfoResponseDto>> getMyInfo() {
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
