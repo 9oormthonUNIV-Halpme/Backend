@@ -25,6 +25,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class ChatMessageController {
+
     private final ChatMessageService chatMessageService;
     private final SimpMessagingTemplate messagingTemplate;
     private final MessageReadStatusRepository messageReadStatusRepository;
@@ -32,6 +33,7 @@ public class ChatMessageController {
 
     @MessageMapping("/message")
     public void sendMessage(@Payload ChatMessageDto message, Message<?> rawMessage, Principal principal) {
+
         if (principal == null) {
             // fallback: 세션에서 user 꺼내기
             StompHeaderAccessor accessor = StompHeaderAccessor.wrap(rawMessage);
@@ -54,7 +56,10 @@ public class ChatMessageController {
 
         ChatMessage saved = chatMessageService.createChatMessage(message);
 
-        messagingTemplate.convertAndSend("/sub/channel/" + message.getRoomId(), ChatMessageDto.fromEntity(saved));
+        messagingTemplate.convertAndSend(
+                "/sub/channel/" + message.getRoomId(),
+                ChatMessageDto.fromEntity(saved)
+        );
     }
 
 

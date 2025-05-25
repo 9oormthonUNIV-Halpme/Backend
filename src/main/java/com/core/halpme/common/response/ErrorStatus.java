@@ -20,7 +20,9 @@ public enum ErrorStatus {
     BAD_REQUEST_DUPLICATE_PHONE(HttpStatus.BAD_REQUEST, "이미 사용 중인 전화번호입니다."),
     BAD_REQUEST_INVALID_EMAIL(HttpStatus.BAD_REQUEST, "잘못된 이메일입니다."),
     BAD_REQUEST_POST_WRITER_NOT_SAME_USER(HttpStatus.BAD_REQUEST, "작성자와 요청자가 다릅니다."),
+    BAD_REQUEST_NOT_ALLOW_IMG_MIME(HttpStatus.BAD_REQUEST, "이미지 파일(jpg, jpeg, png, bmp, webp)만 업로드할 수 있습니다."),
     BAD_REQUEST_ALREADY_ASSIGNED_VOLUNTEER(HttpStatus.BAD_REQUEST, "이미 봉사자가 배정된 글입니다."),
+
 
     /**
      * 401 UNAUTHORIZED

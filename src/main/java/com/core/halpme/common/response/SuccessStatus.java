@@ -28,6 +28,8 @@ public enum SuccessStatus {
     CHATROOM_LIST_SUCCESS(HttpStatus.OK, "채팅방 목록 조회 성공"),
     CHAT_MESSAGES_SUCCESS(HttpStatus.OK, "채팅 메시지 조회 성공"),
     CHAT_MESSAGES_GET_SUCCESS(HttpStatus.OK, "채팅 메시지 목록 조회 성공"),
+    IMAGE_UPLOAD_POST_SUCCESS(HttpStatus.OK, "이미지 업로드 성공"),
+    IMAGE_DELETE_SUCCESS(HttpStatus.OK, "이미지 삭제 성공"),
     MY_VOLUNTEER_POST_LIST_GET_SUCCESS(HttpStatus.OK, "내 봉사 참여글(내역) 조회 성공"),
 
     /**

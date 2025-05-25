@@ -5,11 +5,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
-@Table(name = "ChatMessage")
+@Table(name = "chat_message")
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @EntityListeners(value = {AuditingEntityListener.class})
@@ -31,4 +32,11 @@ public class ChatMessage extends BaseTimeEntity {
 
     @Column(name = "message")
     private String message;
+
+    @OneToMany(mappedBy = "chatMessage", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<ChatMessageImage> images = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    private MessageType messageType;
 }
