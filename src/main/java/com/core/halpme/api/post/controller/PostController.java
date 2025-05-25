@@ -1,9 +1,6 @@
 package com.core.halpme.api.post.controller;
 
-import com.core.halpme.api.post.dto.MyPostListResponseDto;
-import com.core.halpme.api.post.dto.PostCreateRequestDto;
-import com.core.halpme.api.post.dto.PostDetailResponseDto;
-import com.core.halpme.api.post.dto.PostTotalListResponseDto;
+import com.core.halpme.api.post.dto.*;
 import com.core.halpme.api.post.service.PostService;
 import com.core.halpme.common.exception.BadRequestException;
 import com.core.halpme.common.response.ApiResponse;
@@ -11,7 +8,7 @@ import com.core.halpme.common.response.ErrorStatus;
 import com.core.halpme.common.response.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +46,45 @@ public class PostController {
         return ApiResponse.successOnly(SuccessStatus.ARTICLE_CREATE_SUCCESS);
     }
 
+    @Operation(
+            summary = "내 봉사 참여글(내역) 전체 조회",
+            description = "내가 참여한 봉사 참여글(내역)을 모두 조회합니다."
+    )
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "내 봉사 참여글(내역) 조회 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "필수 정보가 입력되지 않았습니다.")
+    })
+    @GetMapping("/my-volunteer")
+    public ResponseEntity<ApiResponse<List<MyVolunteerPostListResponseDto>>> getMyVolunteerPost() {
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<MyVolunteerPostListResponseDto> posts = postService.getMyVolunteerPosts(email);
+
+        return ApiResponse.success(SuccessStatus.MY_VOLUNTEER_POST_LIST_GET_SUCCESS, posts);
+    }
+
+    @Operation(
+            summary = "봉사 신청에 대해 참여자로 참여",
+            description = "특정 봉사 신청에 대해 현재 멤버를 참여자로 지정합니다."
+    )
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "봉사 참여자로 등록 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "필수 정보가 입력되지 않았습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "해당 봉사 신청글 또는 봉사를 찾을 수 없습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "이미 다른 봉사자가 배정된 신청글입니다.")
+    })
+    @PostMapping("/{postId}/participate")
+    public ResponseEntity<ApiResponse<Void>> participateAsVolunteer(@PathVariable Long postId) {
+
+        if (postId == null) {
+            throw new BadRequestException(ErrorStatus.BAD_REQUEST_MISSING_REQUIRED_FIELD.getMessage());
+        }
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        postService.participateAsVolunteer(postId, email);
+
+        return ApiResponse.successOnly(SuccessStatus.VOLUNTEER_PARTICIPATE_SET_SUCCESS);
+    }
 
     @Operation(
             summary = "내 봉사 신청글 전체 조회",
@@ -58,7 +94,7 @@ public class PostController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "내 봉사 신청글 조회 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "필수 정보가 입력되지 않았습니다.")
     })
-    @GetMapping("/my")
+    @GetMapping("/my-request")
     public ResponseEntity<ApiResponse<List<MyPostListResponseDto>>> getMyPost() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -69,10 +105,9 @@ public class PostController {
         return ApiResponse.success(SuccessStatus.MY_POST_LIST_GET_SUCCESS, myPostList);
     }
 
-
     @Operation(
             summary = "전체 봉사 신청글 조회",
-            description = "현재 전체 봉사 신청글 목록을 조회합니다."
+            description = "전체 봉사 신청글 목록을 조회합니다."
     )
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "전체 봉사 신청글 조회 성공"),
@@ -87,8 +122,8 @@ public class PostController {
     }
 
     @Operation(
-            summary = "봉사 신청글 상세 조회",
-            description = "특정 봉사 신청의 상세 정보를 조회합니다."
+            summary = "봉사 신청글 혹은 참여글 상세 조회",
+            description = "특정 봉사 신청글 혹은 참여글의 상세 정보를 조회합니다."
     )
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "봉사 신청글 조회 성공"),
