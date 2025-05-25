@@ -28,6 +28,7 @@ public enum SuccessStatus {
     CHATROOM_LIST_SUCCESS(HttpStatus.OK, "채팅방 목록 조회 성공"),
     CHAT_MESSAGES_SUCCESS(HttpStatus.OK, "채팅 메시지 조회 성공"),
     CHAT_MESSAGES_GET_SUCCESS(HttpStatus.OK, "채팅 메시지 목록 조회 성공"),
+    MY_VOLUNTEER_POST_LIST_GET_SUCCESS(HttpStatus.OK, "내 봉사 참여글(내역) 조회 성공"),
 
     /**
      * 201 CREATED
@@ -35,6 +36,7 @@ public enum SuccessStatus {
     ARTICLE_CREATE_SUCCESS(HttpStatus.CREATED, "게시판 등록 성공"),
     CHAT_MESSAGE_SENT(HttpStatus.CREATED, "채팅 메시지 전송 성공"),
     CHAT_ROOM_CREATE_SUCCESS(HttpStatus.CREATED, "채팅방 생성 성공"),
+    VOLUNTEER_PARTICIPATE_SET_SUCCESS(HttpStatus.CREATED, "참여자 지정 성공"),
 
     /**
      * 204 NO CONTENT
