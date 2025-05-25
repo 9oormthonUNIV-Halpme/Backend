@@ -21,6 +21,8 @@ public enum ErrorStatus {
     BAD_REQUEST_INVALID_EMAIL(HttpStatus.BAD_REQUEST, "잘못된 이메일입니다."),
     BAD_REQUEST_POST_WRITER_NOT_SAME_USER(HttpStatus.BAD_REQUEST, "작성자와 요청자가 다릅니다."),
     BAD_REQUEST_NOT_ALLOW_IMG_MIME(HttpStatus.BAD_REQUEST, "이미지 파일(jpg, jpeg, png, bmp, webp)만 업로드할 수 있습니다."),
+    BAD_REQUEST_ALREADY_ASSIGNED_VOLUNTEER(HttpStatus.BAD_REQUEST, "이미 봉사자가 배정된 글입니다."),
+
 
     /**
      * 401 UNAUTHORIZED
@@ -42,7 +44,9 @@ public enum ErrorStatus {
      * 404 NOT_FOUND
      */
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "해당 유저를 찾을 수 없습니다."),
+    NOT_FOUND_VOLUNTEER(HttpStatus.NOT_FOUND, "봉사자(유저)를 찾을 수 없습니다."),
     NOT_FOUND_RESOURCE(HttpStatus.NOT_FOUND, "요청한 리소스를 찾을 수 없습니다."),
+    NOT_FOUND_POST(HttpStatus.NOT_FOUND, "해당 봉사 신청글이 존재하지 않습니다."),
 
     /**
      * 500 SERVER_ERROR
