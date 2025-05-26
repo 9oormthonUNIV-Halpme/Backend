@@ -30,7 +30,7 @@ public class S3Service {
 
     public List<String> uploadChatMessageImages(String memberIdentifier, List<MultipartFile> files) throws IOException {
 
-        String dir = "post-images";
+        String dir = "chat-images";
         List<String> imageUrls = new ArrayList<>();
 
         RandomStringGenerator generator = new RandomStringGenerator.Builder()
