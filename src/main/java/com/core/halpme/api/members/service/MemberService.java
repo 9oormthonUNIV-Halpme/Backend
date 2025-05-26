@@ -3,6 +3,7 @@ package com.core.halpme.api.members.service;
 import com.core.halpme.api.members.dto.LoginRequestDto;
 import com.core.halpme.api.members.dto.MemberInfoResponseDto;
 import com.core.halpme.api.members.dto.SignupRequestDto;
+import com.core.halpme.api.members.dto.UpdateMemberRequestDto;
 import com.core.halpme.api.members.entity.Member;
 import com.core.halpme.api.members.jwt.JwtTokenProvider;
 import com.core.halpme.api.members.repository.MemberRepository;
@@ -99,4 +100,27 @@ public class MemberService {
 
         return MemberInfoResponseDto.toDto(member);
     }
+
+    @Transactional
+    public void updateMemberInfo(String email, UpdateMemberRequestDto request) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.NOT_FOUND_USER.getMessage()));
+
+        if (!member.getNickname().equals(request.getNickname())
+                && memberRepository.findByNickname(request.getNickname()).isPresent()) {
+            throw new BaseException(ErrorStatus.BAD_REQUEST_DUPLICATE_NICKNAME.getHttpStatus(),
+                    ErrorStatus.BAD_REQUEST_DUPLICATE_NICKNAME.getMessage());
+        }
+
+        if (!member.getPhoneNumber().equals(request.getPhoneNumber())
+                && memberRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
+            throw new BaseException(ErrorStatus.BAD_REQUEST_DUPLICATE_PHONE.getHttpStatus(),
+                    ErrorStatus.BAD_REQUEST_DUPLICATE_PHONE.getMessage());
+        }
+
+        member.updateNickname(request.getNickname()); // 또는 멤버에 별도 updateNickname 메서드 정의
+        member.updatePhoneNumber(request.getPhoneNumber());
+        member.updateAddress(request.toAddress());
+    }
+
 }

@@ -59,7 +59,7 @@ public class Member extends BaseTimeEntity {
                 .build();
     }
 
-    // 멤버 닉네임 변경 메서드
+    // 멤버 전화번호 변경 메서드
     public void updatePhoneNumber(String updatedPhoneNumber) {
         this.phoneNumber = updatedPhoneNumber;
     }
@@ -68,6 +68,9 @@ public class Member extends BaseTimeEntity {
     public void updateAddress(Address updatedAddress) {
         this.address = updatedAddress;
     }
+
+    // 닉네임 변경 메서드
+    public void updateNickname(String nickname){this.nickname=nickname;}
 
     // posts 필드에 post 추가 메서드
     public void addPost(Post post) {
