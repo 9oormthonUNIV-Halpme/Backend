@@ -44,7 +44,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/v1/auth/**",                      // 회원/인증 엔드포인트  (개발 환경 임시)
-                                "/api/v1/posts/**"                      // 봉사 신청글 엔드포인트 (개발 환경 임시)
+                                "/api/v1/posts/**",                     // 봉사 신청글 엔드포인트 (개발 환경 임시)
+                                "/api/v1/members/**",                   // 회원 조회 관련 엔드포인트
+                                "/api/v1/s3/**"                         // S3 관련 엔드포인트
                         ).permitAll()
                         .requestMatchers(
                                 "/",                                    // 인덱스
