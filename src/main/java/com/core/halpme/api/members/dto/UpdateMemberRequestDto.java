@@ -12,6 +12,7 @@ public class UpdateMemberRequestDto {
     private String basicAddress;
     private String detailAddress;
     private String direction;
+    private int age;
 
     public Address toAddress() {
         return Address.builder()

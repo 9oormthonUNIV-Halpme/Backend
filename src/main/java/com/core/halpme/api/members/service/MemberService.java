@@ -118,9 +118,10 @@ public class MemberService {
                     ErrorStatus.BAD_REQUEST_DUPLICATE_PHONE.getMessage());
         }
 
-        member.updateNickname(request.getNickname()); // 또는 멤버에 별도 updateNickname 메서드 정의
+        member.updateNickname(request.getNickname());
         member.updatePhoneNumber(request.getPhoneNumber());
         member.updateAddress(request.toAddress());
+        member.updateAge(request.getAge());
     }
 
 }

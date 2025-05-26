@@ -72,6 +72,7 @@ public class Member extends BaseTimeEntity {
     // 닉네임 변경 메서드
     public void updateNickname(String nickname){this.nickname=nickname;}
 
+    public void updateAge(int age){this.age=age;}
     // posts 필드에 post 추가 메서드
     public void addPost(Post post) {
         this.posts.add(post);
