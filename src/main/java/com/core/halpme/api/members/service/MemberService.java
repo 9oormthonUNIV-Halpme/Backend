@@ -31,14 +31,10 @@ public class MemberService {
 
     @Transactional
     public void signupMember(SignupRequestDto request) {
+
         if (memberRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new BaseException(ErrorStatus.BAD_REQUEST_DUPLICATE_EMAIL.getHttpStatus(),
                     ErrorStatus.BAD_REQUEST_DUPLICATE_EMAIL.getMessage());
-        }
-
-        if (memberRepository.findByNickname(request.getNickname()).isPresent()) {
-            throw new BaseException(ErrorStatus.BAD_REQUEST_DUPLICATE_NICKNAME.getHttpStatus(),
-                    ErrorStatus.BAD_REQUEST_DUPLICATE_NICKNAME.getMessage());
         }
 
         if (memberRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
