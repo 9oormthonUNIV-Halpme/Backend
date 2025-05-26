@@ -8,11 +8,13 @@ import com.core.halpme.api.post.entity.Post;
 import com.core.halpme.api.post.entity.PostStatus;
 import com.core.halpme.api.post.repository.PostRepository;
 
+import com.core.halpme.api.rank.service.RankService;
 import com.core.halpme.common.exception.ConflictException;
 import com.core.halpme.common.exception.NotFoundException;
 import com.core.halpme.common.exception.UnauthorizedException;
 import com.core.halpme.common.response.ErrorStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +27,7 @@ public class PostService {
 
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
+    private final RankService rankService;
 
     // 봉사 신청글 생성
     @Transactional
@@ -82,6 +85,27 @@ public class PostService {
                 .orElseThrow(() -> new NotFoundException(ErrorStatus.NOT_FOUND_VOLUNTEER.getMessage()));
 
         post.assignVolunteer(volunteer);
+    }
+
+    @Transactional
+    public void authenticatePost(Long postId, String email, int volunteerHours) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.NOT_FOUND_RESOURCE.getMessage()));
+
+        if(!post.getMember().getEmail().equals(email)) {
+            throw new UnauthorizedException(ErrorStatus.BAD_REQUEST_POST_WRITER_NOT_SAME_USER.getMessage());
+        }
+
+        //상태 변경
+        post.updateActivityStatus(PostStatus.AUTHENTICATED);
+
+        //봉사자 존재 여부 확인 후 Rank 업데이트
+        if(post.getVolunteer() != null) {
+            rankService.updateRank(post.getVolunteer(), post, volunteerHours);
+        }
+        else {
+            throw new NotFoundException(ErrorStatus.NOT_FOUND_VOLUNTEER.getMessage());
+        }
     }
 
     // 전체 봉사 신청글 조회
