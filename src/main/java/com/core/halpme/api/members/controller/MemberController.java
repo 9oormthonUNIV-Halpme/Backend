@@ -1,9 +1,6 @@
 package com.core.halpme.api.members.controller;
 
-import com.core.halpme.api.members.dto.LoginRequestDto;
-import com.core.halpme.api.members.dto.MemberInfoResponseDto;
-import com.core.halpme.api.members.dto.SignupRequestDto;
-import com.core.halpme.api.members.dto.ResignRequestDto;
+import com.core.halpme.api.members.dto.*;
 import com.core.halpme.api.members.service.MemberService;
 import com.core.halpme.common.response.ApiResponse;
 import com.core.halpme.common.response.SuccessStatus;
@@ -91,4 +88,18 @@ public class MemberController {
 
         return ApiResponse.success(SuccessStatus.AUTH_SUCCESS, "인증에 성공했습니다!");
     }
+
+    @Operation(
+            summary = "회원정보 수정",
+            description = "닉네임, 전화번호, 우편번호, 주소, 상세주소, 찾아오는 길, 나이 수정."
+    )
+    @PutMapping("/members/my-page")
+    public ResponseEntity<ApiResponse<Void>> updateMyInfo(@Valid @RequestBody UpdateMemberRequestDto request) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        memberService.updateMemberInfo(email, request);
+
+        return ApiResponse.successOnly(SuccessStatus.MEMBER_UPDATE_SUCCESS);
+    }
+
 }
