@@ -102,22 +102,28 @@ public class MemberService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(ErrorStatus.NOT_FOUND_USER.getMessage()));
 
-        if (!member.getNickname().equals(request.getNickname())
-                && memberRepository.findByNickname(request.getNickname()).isPresent()) {
-            throw new BaseException(ErrorStatus.BAD_REQUEST_DUPLICATE_NICKNAME.getHttpStatus(),
-                    ErrorStatus.BAD_REQUEST_DUPLICATE_NICKNAME.getMessage());
-        }
-
         if (!member.getPhoneNumber().equals(request.getPhoneNumber())
                 && memberRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
             throw new BaseException(ErrorStatus.BAD_REQUEST_DUPLICATE_PHONE.getHttpStatus(),
                     ErrorStatus.BAD_REQUEST_DUPLICATE_PHONE.getMessage());
         }
 
-        member.updateNickname(request.getNickname());
-        member.updatePhoneNumber(request.getPhoneNumber());
-        member.updateAddress(request.toAddress());
-        member.updateAge(request.getAge());
+        if (!member.getNickname().equals(request.getNickname())) {
+            member.updateNickname(request.getNickname());
+        }
+
+        if (!member.getPhoneNumber().equals(request.getPhoneNumber())) {
+            member.updatePhoneNumber(request.getPhoneNumber());
+        }
+
+        if (!member.getAddress().equals(request.getAddress())) {
+            member.updateAddress(request.getAddress());
+        }
+
+        if (member.getAge() != request.getAge()) {
+            member.updateAge(request.getAge());
+        }
     }
+
 
 }
