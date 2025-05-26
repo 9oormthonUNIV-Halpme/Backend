@@ -91,7 +91,7 @@ public class MemberController {
 
     @Operation(
             summary = "회원정보 수정",
-            description = "닉네임, 전화번호, 우편번호, 주소, 상세주소, 찾아오는 길 수정."
+            description = "닉네임, 전화번호, 우편번호, 주소, 상세주소, 찾아오는 길, 나이 수정."
     )
     @PutMapping("/members/my-page")
     public ResponseEntity<ApiResponse<Void>> updateMyInfo(@Valid @RequestBody UpdateMemberRequestDto request) {
