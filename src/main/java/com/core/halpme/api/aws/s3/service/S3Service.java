@@ -22,7 +22,7 @@ public class S3Service {
 
     private final S3Client s3Client;
 
-    @Value("${cloud.aws.region.static}")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
     @Value("${cloud.aws.s3.domain}")
