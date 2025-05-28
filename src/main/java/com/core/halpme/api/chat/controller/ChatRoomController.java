@@ -66,4 +66,13 @@ public class ChatRoomController {
         return ApiResponse.success(SuccessStatus.CHATROOM_LIST_SUCCESS, rooms);
     }
 
+    @GetMapping("/opponent-nickname")
+    @Operation(summary = "채팅방 ID로 상대방 닉네임 반환", description = "채팅방 ID 필요, JWT 인증 필요")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<OpponentNicknameDto>> getOpponentNickname(@RequestParam String roomId) {
+        String myEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        String nickname = chatRoomService.getOpponentNickname(roomId, myEmail);
+        return ApiResponse.success(SuccessStatus.CHAT_OPPONENT_NICKNAME_SUCCESS, new OpponentNicknameDto(nickname));
+    }
+
 }

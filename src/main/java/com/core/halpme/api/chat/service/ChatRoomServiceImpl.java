@@ -74,4 +74,22 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 .map(room -> ChatRoomDto.fromEntity(room, userEmail, messageReadStatusRepository))
                 .toList();
     }
+
+
+    public String getOpponentNickname(String roomId, String currentUserEmail) {
+        ChatRoom room = chatRoomRepository.findById(roomId)
+                .orElseThrow(() ->
+                        new BaseException(
+                                ErrorStatus.NOT_FOUND_CHATROOM.getHttpStatus(),
+                                ErrorStatus.NOT_FOUND_CHATROOM.getMessage()
+                        )
+                );
+
+        return room.getChatRoomMembers().stream()
+                .filter(m -> !m.getEmail().equals(currentUserEmail))
+                .map(Member::getNickname)
+                .findFirst()
+                .orElse("알 수 없음");
+    }
+
 }
