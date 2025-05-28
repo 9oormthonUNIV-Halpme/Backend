@@ -52,7 +52,7 @@ public class S3Service {
                 originalFilename = originalFilename.substring(0, originalFilename.lastIndexOf("."));
             }
 
-            // 파일명: {원파일이름}_{currentDateTime}{확장자}
+            // 파일명: {원파일이름}_{currentDateTime}.{확장자}
             String fileName = originalFilename + "_" + currentDateTime + extension;
 
             // 파일경로: post-images/{memberEmailPrefix}/{랜덤문자(16자리)/파일명
