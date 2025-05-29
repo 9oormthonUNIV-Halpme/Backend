@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @NoArgsConstructor
@@ -21,7 +22,8 @@ public class MyVolunteerPostListResponseDto {
     private String nickname;
     private AddressDto address;
     private LocalDate requestDate;
-    private String requestTime;
+    private LocalTime startHour;
+    private LocalTime endHour;
     private PostStatus postStatus;
 
     public static MyVolunteerPostListResponseDto toDto(Post post) {
@@ -32,7 +34,8 @@ public class MyVolunteerPostListResponseDto {
                 .nickname(post.getMember().getNickname())
                 .address(AddressDto.toDto(post.getAddress()))
                 .requestDate(post.getRequestDate())
-                .requestTime(post.getRequestTime())
+                .startHour(post.getStartHour())
+                .endHour(post.getEndHour())
                 .postStatus(post.getPostStatus())
                 .build();
     }

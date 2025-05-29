@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 @Getter
@@ -23,7 +24,8 @@ public class PostDetailResponseDto {
     private String content;
     private AddressDto address;
     private LocalDate requestDate;
-    private String requestTime;
+    private LocalTime startHour;
+    private LocalTime endHour;
     private String date;
 
     public static PostDetailResponseDto toDto(Post post) {
@@ -37,7 +39,8 @@ public class PostDetailResponseDto {
                 .content(post.getContent())
                 .address(AddressDto.toDto(post.getAddress()))
                 .requestDate(post.getRequestDate())
-                .requestTime(post.getRequestTime())
+                .startHour(post.getStartHour())
+                .endHour(post.getEndHour())
                 .date(post.getUpdatedAt().format(formatter))
                 .build();
     }

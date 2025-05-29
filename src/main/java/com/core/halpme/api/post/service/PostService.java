@@ -42,7 +42,8 @@ public class PostService {
                 .title(request.getTitle())
                 .content(request.getContent())
                 .requestDate(request.getRequestDate())
-                .requestTime(request.getRequestTime())
+                .startHour(request.getStartHour())
+                .endHour(request.getEndHour())
                 .address(address)
                 .member(member)
                 .build();
@@ -87,8 +88,9 @@ public class PostService {
         post.assignVolunteer(volunteer);
     }
 
+    //봉사자 인증
     @Transactional
-    public void authenticatePost(Long postId, String email, int volunteerHours) {
+    public void authenticatePost(Long postId, String email) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException(ErrorStatus.NOT_FOUND_RESOURCE.getMessage()));
 
@@ -101,6 +103,7 @@ public class PostService {
 
         //봉사자 존재 여부 확인 후 Rank 업데이트
         if(post.getVolunteer() != null) {
+            int volunteerHours = post.calculateVolunteerHours();
             rankService.updateRank(post.getVolunteer(), post, volunteerHours);
         }
         else {

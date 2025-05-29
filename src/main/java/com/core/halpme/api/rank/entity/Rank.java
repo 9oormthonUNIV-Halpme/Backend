@@ -34,15 +34,15 @@ public class Rank extends BaseTimeEntity {
     // 누적 봉사시간 기준 레벨 업데이트
     public void updateRankLevel() {
         if (totalVolunteerHours >= 100) {
-            this.rankLevel = RankLevel.MASTER;
-        } else if (totalVolunteerHours >= 50) {
-            this.rankLevel = RankLevel.EXPERT;
+            this.rankLevel = RankLevel.HERO;
+        } else if (totalVolunteerHours >= 60) {
+            this.rankLevel = RankLevel.LOCAL_LEADER;
         } else if (totalVolunteerHours >= 30) {
-            this.rankLevel = RankLevel.SENIOR;
+            this.rankLevel = RankLevel.GUARDIAN;
         } else if (totalVolunteerHours >= 10) {
-            this.rankLevel = RankLevel.JUNIOR;
+            this.rankLevel = RankLevel.ACTIVIST;
         } else {
-            this.rankLevel = RankLevel.BEGINNER;
+            this.rankLevel = RankLevel.SEED_HELPER;
         }
     }
 

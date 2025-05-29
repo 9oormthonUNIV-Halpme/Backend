@@ -8,7 +8,9 @@ import com.core.halpme.common.response.ErrorStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -36,8 +38,12 @@ public class Post extends BaseTimeEntity {
     private LocalDate requestDate;
 
     // 봉사 요청 시작 시각
-    @Column(name = "request_time")
-    private String requestTime;
+    @Column(name = "start_hour")
+    private LocalTime startHour;
+
+    // 봉사 요청 끝 시각
+    @Column(name = "end_hour")
+    private LocalTime endHour;
 
     // 게시글 봉사 현황 (대기, 완료, 취소)
     @Enumerated(EnumType.STRING)
@@ -87,15 +93,23 @@ public class Post extends BaseTimeEntity {
         this.address = address;
     }
 
-    public void updateRequestDate(LocalDate requestDate) {
-        this.requestDate = requestDate;
-    }
+    public void updateStartTime(LocalTime startHour) {this.startHour = startHour; }
 
-    public void updateRequestTime(String requestTime) {
-        this.requestTime = requestTime;
-    }
+    public void updateEndTime(LocalTime endHour) {this.endHour = endHour; }
 
     public void updateActivityStatus(PostStatus postStatus) {
         this.postStatus = postStatus;
+    }
+
+    //봉사시간 계산 로직 endTime - startTime
+    public int calculateVolunteerHours() {
+        if(this.startHour == null || this.endHour == null) {
+            throw new IllegalArgumentException("시작/종료 시간이 없습니다.");
+        }
+        if(!this.endHour.isAfter(this.startHour)) {
+            throw new IllegalArgumentException("종료 시간은 시작시간보다 늦어야합니다.");
+        }
+        //봉사시간 int 형태로 바꾸고 반환
+        return (int) Duration.between(this.startHour, this.endHour).toHours();
     }
 }

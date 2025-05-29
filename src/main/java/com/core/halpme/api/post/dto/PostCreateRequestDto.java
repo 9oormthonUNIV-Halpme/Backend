@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @NoArgsConstructor
@@ -24,6 +25,9 @@ public class PostCreateRequestDto {
     @NotNull
     private LocalDate requestDate;
 
-    @NotBlank
-    private String requestTime;
+    @NotNull
+    private LocalTime startHour;
+
+    @NotNull
+    private LocalTime endHour;
 }
