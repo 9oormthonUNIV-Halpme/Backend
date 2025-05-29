@@ -2,6 +2,7 @@ package com.core.halpme.api.post.dto;
 
 import com.core.halpme.api.members.entity.Address;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -28,10 +29,12 @@ public class PostCreateRequestDto {
     private LocalDate requestDate;
 
     @NotNull
+    @Schema(type = "string", example = "14:00")
     @JsonFormat(pattern = "HH:mm")
     private LocalTime startHour;
 
     @NotNull
+    @Schema(type = "string", example = "16:30")
     @JsonFormat(pattern = "HH:mm")
     private LocalTime endHour;
 }
