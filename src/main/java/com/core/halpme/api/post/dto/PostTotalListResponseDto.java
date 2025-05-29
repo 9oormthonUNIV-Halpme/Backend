@@ -4,6 +4,7 @@ import com.core.halpme.api.members.dto.AddressDto;
 import com.core.halpme.api.members.entity.Address;
 import com.core.halpme.api.post.entity.Post;
 import com.core.halpme.api.post.entity.PostStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,8 +24,11 @@ public class PostTotalListResponseDto {
     private String title;
     private String nickname;
     private AddressDto address;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate requestDate;
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime startHour;
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime endHour;
     private String createdAt;
     private PostStatus status;
