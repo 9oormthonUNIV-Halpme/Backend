@@ -21,7 +21,7 @@ public class PostCreateRequestDto {
     @NotBlank(message = "내용은 필수 입력 사항입니다.")
     private String content;
 
-    @NotBlank(message = "주소는 필수 입력 사항입니다.")
+    @NotNull(message = "주소는 필수 입력 사항입니다.")
     private Address address;
 
     @NotNull
