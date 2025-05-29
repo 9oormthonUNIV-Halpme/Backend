@@ -2,6 +2,8 @@ package com.core.halpme.api.chat.controller;
 
 import com.core.halpme.api.chat.dto.*;
 import com.core.halpme.api.chat.entity.ChatMessage;
+import com.core.halpme.api.chat.repository.ChatMessageRepository;
+import com.core.halpme.api.chat.repository.MessageReadStatusRepository;
 import com.core.halpme.api.chat.service.ChatMessageService;
 import com.core.halpme.api.chat.service.ChatRoomService;
 import com.core.halpme.common.response.ApiResponse;
@@ -27,7 +29,7 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
-
+    private final MessageReadStatusRepository messageReadStatusRepository;
 
     @PostMapping("/personal")
     @Operation(summary = "두 유저 사이의 채팅방 생성", description = "해당 게시글의 PostId 필요합니다.")
@@ -44,11 +46,19 @@ public class ChatRoomController {
 
     @GetMapping("/messages")
     @Operation(summary = "채팅방 채팅 기록 반환", description = "RoomId 필요")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<List<ChatMessageDto>>> getMessagesByRoomId(@RequestParam String roomId) {
-
+        String myEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         List<ChatMessage> messages = chatMessageService.getMessagesByRoomId(roomId);
+
         List<ChatMessageDto> response = messages.stream()
-                .map(ChatMessageDto::fromEntity)
+                .map(msg -> {
+                    boolean isRead = messageReadStatusRepository
+                            .findByMessageIdAndReaderEmail(msg.getId(), myEmail)
+                            .map(status -> status.isRead())
+                            .orElse(false);
+                    return ChatMessageDto.fromEntity(msg, isRead);
+                })
                 .collect(Collectors.toList());
 
         return ApiResponse.success(SuccessStatus.CHAT_MESSAGES_GET_SUCCESS, response);
@@ -65,13 +75,14 @@ public class ChatRoomController {
         return ApiResponse.success(SuccessStatus.CHATROOM_LIST_SUCCESS, rooms);
     }
 
-    @GetMapping("/opponent-nickname")
-    @Operation(summary = "채팅방 ID로 상대방 닉네임 반환", description = "채팅방 ID 필요, JWT 인증 필요")
+    @GetMapping("/opponent-info")
+    @Operation(summary = "채팅방 ID로 상대방 닉네임, 사용자 신분(봉사요청, 도움요청) 반환", description = "채팅방 ID 필요, JWT 인증 필요")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<OpponentNicknameDto>> getOpponentNickname(@RequestParam String roomId) {
+    public ResponseEntity<ApiResponse<OpponentInfoDto>> getOpponentInfo(@RequestParam String roomId) {
         String myEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        String nickname = chatRoomService.getOpponentNickname(roomId, myEmail);
-        return ApiResponse.success(SuccessStatus.CHAT_OPPONENT_NICKNAME_SUCCESS, new OpponentNicknameDto(nickname));
+        OpponentInfoDto dto = chatRoomService.getChatOpponentInfo(roomId, myEmail);
+        return ApiResponse.success(SuccessStatus.CHAT_OPPONENT_NICKNAME_SUCCESS, dto);
     }
+
 
 }

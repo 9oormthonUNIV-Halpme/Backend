@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class OpponentNicknameDto {
+public class OpponentInfoDto {
     private String opponentNickname;
+    private String identity;
 }

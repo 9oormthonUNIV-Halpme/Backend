@@ -2,6 +2,7 @@ package com.core.halpme.api.chat.controller;
 
 
 import com.core.halpme.api.chat.dto.ChatMessageDto;
+import com.core.halpme.api.chat.dto.ReadStatusMessage;
 import com.core.halpme.api.chat.entity.ChatMessage;
 import com.core.halpme.api.chat.entity.MessageReadStatus;
 import com.core.halpme.api.chat.repository.ChatMessageRepository;
@@ -58,7 +59,7 @@ public class ChatMessageController {
 
         messagingTemplate.convertAndSend(
                 "/sub/channel/" + message.getRoomId(),
-                ChatMessageDto.fromEntity(saved)
+                ChatMessageDto.fromEntity(saved, true)
         );
     }
 
@@ -105,6 +106,13 @@ public class ChatMessageController {
             status.setRead(true);
         }
         messageReadStatusRepository.saveAll(unreadStatuses);
+
+        messagingTemplate.convertAndSend(
+                "/sub/channel/" + roomId + "/read-status",
+                new ReadStatusMessage(readerEmail, unreadStatuses.stream()
+                        .map(status -> status.getMessage().getId())
+                        .toList())
+        );
 
         log.info("총 {}개의 메시지를 읽음 처리했습니다.", unreadStatuses.size());
     }

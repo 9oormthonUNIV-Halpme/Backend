@@ -29,6 +29,7 @@ public class ChatMessageDto {
     private List<String> imageUrls;
     private MessageType messageType;
     private LocalDateTime createdAt;
+    private Boolean ReadStatus;
 
 
     /* Dto -> Entity */
@@ -42,7 +43,7 @@ public class ChatMessageDto {
                 .build();
     }
 
-    public static ChatMessageDto fromEntity(ChatMessage chatMessage) {
+    public static ChatMessageDto fromEntity(ChatMessage chatMessage, boolean isRead) {
 
         List<String> imageUrls = chatMessage.getImages().stream()
                 .sorted((a, b) -> Integer.compare(a.getImageOrder(), b.getImageOrder()))
@@ -57,6 +58,7 @@ public class ChatMessageDto {
                 .imageUrls(imageUrls)
                 .messageType(chatMessage.getMessageType())
                 .createdAt(chatMessage.getCreatedAt())
+                .ReadStatus(isRead)
                 .build();
     }
 }
