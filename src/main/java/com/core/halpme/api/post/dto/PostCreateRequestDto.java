@@ -1,12 +1,14 @@
 package com.core.halpme.api.post.dto;
 
 import com.core.halpme.api.members.entity.Address;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @NoArgsConstructor
@@ -22,8 +24,14 @@ public class PostCreateRequestDto {
     private Address address;
 
     @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate requestDate;
 
-    @NotBlank
-    private String requestTime;
+    @NotNull
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime startHour;
+
+    @NotNull
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime endHour;
 }

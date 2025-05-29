@@ -87,6 +87,18 @@ public class PostController {
     }
 
     @Operation(
+            summary = "봉사글 인증",
+            description = "작성자가 봉사글을 인증 완료 상태로 변경"
+    )
+    @PostMapping("/{postId}/authenticate")
+    public ResponseEntity<ApiResponse<Void>> authenticatePost(@PathVariable Long postId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        postService.authenticatePost(postId, email);
+
+        return ApiResponse.successOnly(SuccessStatus.ARTICLE_UPDATE_SUCCESS);
+    }
+
+    @Operation(
             summary = "내 봉사 신청글 전체 조회",
             description = "내가 작성한 봉사 신청글을 모두 조회합니다."
     )

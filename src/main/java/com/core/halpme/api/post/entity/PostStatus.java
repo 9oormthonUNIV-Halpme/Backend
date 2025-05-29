@@ -6,5 +6,5 @@ import lombok.Getter;
 public enum PostStatus {
     COMPLETED,
     WAITING,
-    CANCELLED
+    AUTHENTICATED
 }
