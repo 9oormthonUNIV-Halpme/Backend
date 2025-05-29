@@ -48,6 +48,10 @@ public class Member extends BaseTimeEntity {
     @Embedded
     private Address address;
 
+    // 랭크 엔티티 연관관계
+    // @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    //  private Rank rank;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Post> posts = new ArrayList<>();

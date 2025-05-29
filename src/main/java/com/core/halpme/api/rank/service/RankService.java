@@ -43,6 +43,9 @@ public class RankService {
     //랭킹 조회
     @Transactional(readOnly = true)
     public List<Rank> getToRanks() {
+        
+        // findTop100ByOrderByTotalVolunteerHoursDesc 사용
+        // 자바 스트림은 오버헤드가 크고 느림
         return rankRepository.findAll()
                 .stream()
 
@@ -52,7 +55,4 @@ public class RankService {
                 .limit(10)
                 .toList();
     }
-
-
-
 }
