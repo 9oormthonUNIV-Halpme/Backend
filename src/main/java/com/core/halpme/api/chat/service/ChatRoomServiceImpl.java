@@ -2,7 +2,7 @@ package com.core.halpme.api.chat.service;
 
 import com.core.halpme.api.chat.dto.ChatRoomDto;
 import com.core.halpme.api.chat.dto.CreateChatRoomResponseDto;
-import com.core.halpme.api.chat.dto.OpponentNicknameDto;
+import com.core.halpme.api.chat.dto.OpponentInfoDto;
 import com.core.halpme.api.chat.entity.ChatRoom;
 import com.core.halpme.api.chat.repository.ChatMessageRepository;
 import com.core.halpme.api.chat.repository.ChatRoomRepository;
@@ -98,7 +98,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
 
-    public OpponentNicknameDto getChatOpponentInfo(String roomId, String currentUserEmail) {
+    public OpponentInfoDto getChatOpponentInfo(String roomId, String currentUserEmail) {
         ChatRoom room = chatRoomRepository.findById(roomId)
                 .orElseThrow(() -> new BaseException(
                         ErrorStatus.NOT_FOUND_CHATROOM.getHttpStatus(),
@@ -115,7 +115,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         String identity = room.getRoomMaker().getEmail().equals(currentUserEmail) ? "봉사참여" : "도움요청";
 
-        return new OpponentNicknameDto(opponentNickname, identity);
+        return new OpponentInfoDto(opponentNickname, identity);
     }
 
 }

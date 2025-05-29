@@ -68,9 +68,9 @@ public class ChatRoomController {
     @GetMapping("/opponent-info")
     @Operation(summary = "채팅방 ID로 상대방 닉네임, 사용자 신분(봉사요청, 도움요청) 반환", description = "채팅방 ID 필요, JWT 인증 필요")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<OpponentNicknameDto>> getOpponentInfo(@RequestParam String roomId) {
+    public ResponseEntity<ApiResponse<OpponentInfoDto>> getOpponentInfo(@RequestParam String roomId) {
         String myEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        OpponentNicknameDto dto = chatRoomService.getChatOpponentInfo(roomId, myEmail);
+        OpponentInfoDto dto = chatRoomService.getChatOpponentInfo(roomId, myEmail);
         return ApiResponse.success(SuccessStatus.CHAT_OPPONENT_NICKNAME_SUCCESS, dto);
     }
 
