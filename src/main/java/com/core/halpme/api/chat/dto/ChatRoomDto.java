@@ -19,6 +19,7 @@ public class ChatRoomDto {
     private ChatMessageDto lastMessage;
     private long unreadCount;
     private String type;
+    private String opponentNickname;
 
     public static ChatRoomDto fromEntity(ChatRoom room, String currentUserEmail, MessageReadStatusRepository readRepo) {
         List<String> memberEmails = room.getChatRoomMembers().stream()
@@ -31,12 +32,20 @@ public class ChatRoomDto {
 
         String type = room.getRoomMaker().getEmail().equals(currentUserEmail) ? "봉사참여" : "도움요청";
 
+        Member opponent = room.getChatRoomMembers().stream()
+                .filter(m -> !m.getEmail().equals(currentUserEmail))
+                .findFirst()
+                .orElse(null);
+
+        String opponentNickname = (opponent != null) ? opponent.getNickname() : "알 수 없음";
+
         return ChatRoomDto.builder()
                 .roomId(room.getId())
                 .participants(memberEmails)
                 .lastMessage(last != null ? ChatMessageDto.fromEntity(last) : null)
                 .unreadCount(unread)
                 .type(type)
+                .opponentNickname(opponentNickname)
                 .build();
     }
 

@@ -22,7 +22,7 @@ public class S3Service {
 
     private final S3Client s3Client;
 
-    @Value("${cloud.aws.region.static}")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
     @Value("${cloud.aws.s3.domain}")
@@ -30,7 +30,7 @@ public class S3Service {
 
     public List<String> uploadChatMessageImages(String memberIdentifier, List<MultipartFile> files) throws IOException {
 
-        String dir = "post-images";
+        String dir = "chat-images";
         List<String> imageUrls = new ArrayList<>();
 
         RandomStringGenerator generator = new RandomStringGenerator.Builder()
@@ -52,7 +52,7 @@ public class S3Service {
                 originalFilename = originalFilename.substring(0, originalFilename.lastIndexOf("."));
             }
 
-            // 파일명: {원파일이름}_{currentDateTime}{확장자}
+            // 파일명: {원파일이름}_{currentDateTime}.{확장자}
             String fileName = originalFilename + "_" + currentDateTime + extension;
 
             // 파일경로: post-images/{memberEmailPrefix}/{랜덤문자(16자리)/파일명
@@ -61,7 +61,6 @@ public class S3Service {
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                     .bucket(bucketName)
                     .key(fileKey)
-                    .acl("public-read")
                     .build();
 
             s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));

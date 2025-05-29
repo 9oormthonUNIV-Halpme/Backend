@@ -3,6 +3,7 @@ package com.core.halpme.api.members.service;
 import com.core.halpme.api.members.dto.LoginRequestDto;
 import com.core.halpme.api.members.dto.MemberInfoResponseDto;
 import com.core.halpme.api.members.dto.SignupRequestDto;
+import com.core.halpme.api.members.dto.UpdateMemberRequestDto;
 import com.core.halpme.api.members.entity.Member;
 import com.core.halpme.api.members.jwt.JwtTokenProvider;
 import com.core.halpme.api.members.repository.MemberRepository;
@@ -31,14 +32,10 @@ public class MemberService {
 
     @Transactional
     public void signupMember(SignupRequestDto request) {
+
         if (memberRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new BaseException(ErrorStatus.BAD_REQUEST_DUPLICATE_EMAIL.getHttpStatus(),
                     ErrorStatus.BAD_REQUEST_DUPLICATE_EMAIL.getMessage());
-        }
-
-        if (memberRepository.findByNickname(request.getNickname()).isPresent()) {
-            throw new BaseException(ErrorStatus.BAD_REQUEST_DUPLICATE_NICKNAME.getHttpStatus(),
-                    ErrorStatus.BAD_REQUEST_DUPLICATE_NICKNAME.getMessage());
         }
 
         if (memberRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
@@ -99,4 +96,34 @@ public class MemberService {
 
         return MemberInfoResponseDto.toDto(member);
     }
+
+    @Transactional
+    public void updateMemberInfo(String email, UpdateMemberRequestDto request) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.NOT_FOUND_USER.getMessage()));
+
+        if (!member.getPhoneNumber().equals(request.getPhoneNumber())
+                && memberRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
+            throw new BaseException(ErrorStatus.BAD_REQUEST_DUPLICATE_PHONE.getHttpStatus(),
+                    ErrorStatus.BAD_REQUEST_DUPLICATE_PHONE.getMessage());
+        }
+
+        if (!member.getNickname().equals(request.getNickname())) {
+            member.updateNickname(request.getNickname());
+        }
+
+        if (!member.getPhoneNumber().equals(request.getPhoneNumber())) {
+            member.updatePhoneNumber(request.getPhoneNumber());
+        }
+
+        if (!member.getAddress().equals(request.getAddress())) {
+            member.updateAddress(request.getAddress());
+        }
+
+        if (member.getAge() != request.getAge()) {
+            member.updateAge(request.getAge());
+        }
+    }
+
+
 }
