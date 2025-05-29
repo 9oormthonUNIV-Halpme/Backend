@@ -2,6 +2,7 @@ package com.core.halpme.api.chat.service;
 
 import com.core.halpme.api.chat.dto.ChatRoomDto;
 import com.core.halpme.api.chat.dto.CreateChatRoomResponseDto;
+import com.core.halpme.api.chat.dto.OpponentNicknameDto;
 import com.core.halpme.api.chat.entity.ChatRoom;
 import com.core.halpme.api.chat.repository.ChatMessageRepository;
 import com.core.halpme.api.chat.repository.ChatRoomRepository;
@@ -97,20 +98,24 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
 
-    public String getOpponentNickname(String roomId, String currentUserEmail) {
+    public OpponentNicknameDto getChatOpponentInfo(String roomId, String currentUserEmail) {
         ChatRoom room = chatRoomRepository.findById(roomId)
-                .orElseThrow(() ->
-                        new BaseException(
-                                ErrorStatus.NOT_FOUND_CHATROOM.getHttpStatus(),
-                                ErrorStatus.NOT_FOUND_CHATROOM.getMessage()
-                        )
-                );
+                .orElseThrow(() -> new BaseException(
+                        ErrorStatus.NOT_FOUND_CHATROOM.getHttpStatus(),
+                        ErrorStatus.NOT_FOUND_CHATROOM.getMessage()
+                ));
 
-        return room.getChatRoomMembers().stream()
-                .filter(m -> !m.getEmail().equals(currentUserEmail))
+
+        String opponentNickname = room.getChatRoomMembers().stream()
+                .filter(member -> !member.getEmail().equals(currentUserEmail))
                 .map(Member::getNickname)
                 .findFirst()
                 .orElse("알 수 없음");
+
+
+        String identity = room.getRoomMaker().getEmail().equals(currentUserEmail) ? "봉사참여" : "도움요청";
+
+        return new OpponentNicknameDto(opponentNickname, identity);
     }
 
 }
