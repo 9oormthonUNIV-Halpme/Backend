@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class GuestEmailDto {
-    private String guestEmail;
+public class GuestPostIdDto {
+    private Long guestPostId;
 }
