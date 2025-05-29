@@ -9,7 +9,11 @@ import com.core.halpme.api.chat.repository.MessageReadStatusRepository;
 import com.core.halpme.api.members.entity.Member;
 import com.core.halpme.api.members.jwt.SecurityUtil;
 import com.core.halpme.api.members.repository.MemberRepository;
+import com.core.halpme.api.post.entity.Post;
+import com.core.halpme.api.post.repository.PostRepository;
+import com.core.halpme.common.exception.BadRequestException;
 import com.core.halpme.common.exception.BaseException;
+import com.core.halpme.common.exception.NotFoundException;
 import com.core.halpme.common.response.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 
@@ -27,15 +31,31 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final SecurityUtil securityUtil;
     private final MessageReadStatusRepository messageReadStatusRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final PostRepository postRepository;
 
     @Override
-    public CreateChatRoomResponseDto createChatRoomForPersonal(String roomMakerEmail, String guestEmail) {
+    public CreateChatRoomResponseDto createChatRoomForPersonal(String roomMakerEmail, Long guestPostId) {
 
         Member roomMaker = memberRepository.findByEmail(roomMakerEmail)
                 .orElseThrow(() -> new BaseException(
                         ErrorStatus.NOT_FOUND_USER.getHttpStatus(),
                         "방 생성자 정보를 찾을 수 없습니다."
                 ));
+
+        // PostId -> Post
+        Post guestPost = postRepository.findById(guestPostId)
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.NOT_FOUND_POST.getMessage()));
+        if (guestPost.getMember() == null) {
+            throw new NotFoundException(ErrorStatus.NOT_FOUND_USER.getMessage());
+        }
+
+        // Post -> Member.email
+        String guestEmail = guestPost.getMember().getEmail();
+
+        // 자기 자신과는 채팅 불가
+        if (roomMakerEmail.equals(guestEmail)) {
+            throw new BadRequestException(ErrorStatus.BAD_REQUEST_INVALID_REQUEST.getMessage());
+        }
 
         Member guest = memberRepository.findByEmail(guestEmail)
                 .orElseThrow(() -> new BaseException(
@@ -57,6 +77,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         // 새로 생성
         ChatRoom newRoom = ChatRoom.create(roomMaker);
         newRoom.addMembers(roomMaker, guest);
+
         chatRoomRepository.save(newRoom);
 
         return new CreateChatRoomResponseDto(
