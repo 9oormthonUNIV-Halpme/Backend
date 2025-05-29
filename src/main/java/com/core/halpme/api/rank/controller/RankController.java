@@ -1,6 +1,7 @@
 package com.core.halpme.api.rank.controller;
 
 import com.core.halpme.api.rank.dto.RankResponseDto;
+import com.core.halpme.api.rank.entity.Rank;
 import com.core.halpme.api.rank.service.RankService;
 import com.core.halpme.common.response.ApiResponse;
 import com.core.halpme.common.response.SuccessStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -31,11 +33,17 @@ public class RankController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "랭킹 데이터가 존재하지 않습니다.")
     })
     @GetMapping("/top")
-    public List<RankResponseDto> getTopRanks() {
-        return rankService.getToRanks()
-                .stream()
-                .map(RankResponseDto::fromEntity)
-                .toList();
+    public ResponseEntity<ApiResponse<List<RankResponseDto>>> getTopRanks() {
+        List<Rank> topRanks = rankService.getToRanks();
+
+        List<RankResponseDto> responseList = new ArrayList<>();
+        int rankOrder = 1;
+
+        for (Rank rank : topRanks) {
+            responseList.add(RankResponseDto.fromEntity(rank, rankOrder++));
+        }
+
+        return ApiResponse.success(SuccessStatus.RANK_GET_SUCCESS, responseList);
     }
 
     // 점수 조회

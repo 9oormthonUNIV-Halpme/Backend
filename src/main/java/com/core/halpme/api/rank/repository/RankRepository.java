@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface RankRepository extends JpaRepository <Rank, Long> {
     Optional<Rank> findByMemberEmail(String email);
 
-    List<Rank> findTop100ByOrderByTotalVolunteerHoursDesc();
+    List<Rank> findTop10ByOrderByTotalVolunteerHoursDesc();
 }

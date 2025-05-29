@@ -31,6 +31,8 @@ public enum SuccessStatus {
     IMAGE_UPLOAD_POST_SUCCESS(HttpStatus.OK, "이미지 업로드 성공"),
     IMAGE_DELETE_SUCCESS(HttpStatus.OK, "이미지 삭제 성공"),
     MY_VOLUNTEER_POST_LIST_GET_SUCCESS(HttpStatus.OK, "내 봉사 참여글(내역) 조회 성공"),
+    RANK_GET_SUCCESS(HttpStatus.OK, "Top 10 랭킹 조회 성공"),
+
 
     /**
      * 201 CREATED

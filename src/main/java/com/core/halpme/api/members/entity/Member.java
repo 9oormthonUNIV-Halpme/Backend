@@ -1,6 +1,7 @@
 package com.core.halpme.api.members.entity;
 
 import com.core.halpme.api.post.entity.Post;
+import com.core.halpme.api.rank.entity.Rank;
 import com.core.halpme.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -49,8 +50,8 @@ public class Member extends BaseTimeEntity {
     private Address address;
 
     // 랭크 엔티티 연관관계
-    // @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    //  private Rank rank;
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Rank rank;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

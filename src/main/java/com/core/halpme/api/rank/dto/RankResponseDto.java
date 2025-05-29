@@ -11,13 +11,14 @@ public class RankResponseDto {
     private String nickname;
     private int totalVolunteerHours;
     private RankLevel rankLevel;
-    // 내 순위
+    private int myRank;
 
-    public static RankResponseDto fromEntity(Rank rank) {
+    public static RankResponseDto fromEntity(Rank rank, int myRank) {
         return RankResponseDto.builder()
                 .nickname(rank.getMember().getNickname())
                 .totalVolunteerHours(rank.getTotalVolunteerHours())
                 .rankLevel(rank.getRankLevel())
+                .myRank(myRank)
                 .build();
     }
 }

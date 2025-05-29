@@ -37,22 +37,14 @@ public class RankService {
     public int getMyTotalVolunteerHours(String email) {
         return rankRepository.findByMemberEmail(email)
                 .map(Rank::getTotalVolunteerHours)
-                .orElse(0);
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.NOT_FOUND_USER.getMessage()));
     }
 
     //랭킹 조회
     @Transactional(readOnly = true)
     public List<Rank> getToRanks() {
-        
-        // findTop100ByOrderByTotalVolunteerHoursDesc 사용
-        // 자바 스트림은 오버헤드가 크고 느림
-        return rankRepository.findAll()
-                .stream()
 
-                //큰값이 먼저 오도록
-                .sorted((a,b) -> Integer.compare(b.getTotalVolunteerHours(), a.getTotalVolunteerHours()))
-                //상위 10명
-                .limit(10)
-                .toList();
+        return rankRepository.findTop10ByOrderByTotalVolunteerHoursDesc();
     }
+
 }
