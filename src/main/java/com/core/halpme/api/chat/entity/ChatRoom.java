@@ -44,11 +44,16 @@ public class ChatRoom extends BaseTimeEntity {
     @JoinColumn(name = "room_maker_id")
     private Member roomMaker;
 
-    public static ChatRoom create(Member roomMaker){
+    @Column(name = "guest_post_id")
+    private Long guestPostId;
+
+    public static ChatRoom create(Member roomMaker, Long guestPostId){
 
         ChatRoom room = new ChatRoom();
         room.setId(UUID.randomUUID().toString());
         room.setRoomMaker(roomMaker);
+        room.setGuestPostId(guestPostId);
+
         return room;
     }
 

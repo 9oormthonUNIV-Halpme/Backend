@@ -2,6 +2,7 @@ package com.core.halpme.api.chat.controller;
 
 import com.core.halpme.api.chat.dto.*;
 import com.core.halpme.api.chat.entity.ChatMessage;
+import com.core.halpme.api.chat.entity.MessageReadStatus;
 import com.core.halpme.api.chat.repository.ChatMessageRepository;
 import com.core.halpme.api.chat.repository.MessageReadStatusRepository;
 import com.core.halpme.api.chat.service.ChatMessageService;
@@ -42,8 +43,6 @@ public class ChatRoomController {
         return ApiResponse.success(SuccessStatus.CHAT_ROOM_CREATE_SUCCESS, response);
     }
 
-
-
     @GetMapping("/messages")
     @Operation(summary = "채팅방 채팅 기록 반환", description = "RoomId 필요")
     @PreAuthorize("isAuthenticated()")
@@ -55,7 +54,7 @@ public class ChatRoomController {
                 .map(msg -> {
                     boolean isRead = messageReadStatusRepository
                             .findByMessageIdAndReaderEmail(msg.getId(), myEmail)
-                            .map(status -> status.isRead())
+                            .map(MessageReadStatus::isRead)
                             .orElse(false);
                     return ChatMessageDto.fromEntity(msg, isRead);
                 })
@@ -63,7 +62,6 @@ public class ChatRoomController {
 
         return ApiResponse.success(SuccessStatus.CHAT_MESSAGES_GET_SUCCESS, response);
     }
-
 
     @GetMapping("/rooms")
     @Operation(summary = "사용자의 채팅방 목록 보기", description = "인증 토큰 필요")
@@ -84,5 +82,15 @@ public class ChatRoomController {
         return ApiResponse.success(SuccessStatus.CHAT_OPPONENT_NICKNAME_SUCCESS, dto);
     }
 
+    @Operation(
+            summary = "채팅방ID로 상대방의 봉사 요청글 PostId 반환",
+            description = "채팅방ID 필요"
+    )
+    @GetMapping("/{chatRoomId}/post")
+    public ResponseEntity<ApiResponse<ChatRoomIdToPostIdDto>> getPostIdByChatRoomId(@PathVariable String chatRoomId) {
 
+        ChatRoomIdToPostIdDto dto = chatRoomService.getPostIdByChatRoomId(chatRoomId);
+
+        return ApiResponse.success(SuccessStatus.POST_ID_GET_SUCCESS, dto);
+    }
 }

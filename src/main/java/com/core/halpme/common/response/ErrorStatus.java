@@ -48,6 +48,8 @@ public enum ErrorStatus {
     NOT_FOUND_RESOURCE(HttpStatus.NOT_FOUND, "요청한 리소스를 찾을 수 없습니다."),
     NOT_FOUND_POST(HttpStatus.NOT_FOUND, "해당 봉사 신청글이 존재하지 않습니다."),
     NOT_FOUND_CHATROOM(HttpStatus.NOT_FOUND, "해당 채팅방이 존재하지 않습니다."),
+    NOT_FOUND_RELATED_POST(HttpStatus.NOT_FOUND, "채팅방에 연관된 봉사 요청글이 없습니다"),
+
     /**
      * 500 SERVER_ERROR
      */

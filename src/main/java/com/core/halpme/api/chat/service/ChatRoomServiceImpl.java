@@ -1,6 +1,7 @@
 package com.core.halpme.api.chat.service;
 
 import com.core.halpme.api.chat.dto.ChatRoomDto;
+import com.core.halpme.api.chat.dto.ChatRoomIdToPostIdDto;
 import com.core.halpme.api.chat.dto.CreateChatRoomResponseDto;
 import com.core.halpme.api.chat.dto.OpponentInfoDto;
 import com.core.halpme.api.chat.entity.ChatRoom;
@@ -76,7 +77,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         }
 
         // 새로 생성
-        ChatRoom newRoom = ChatRoom.create(roomMaker);
+        ChatRoom newRoom = ChatRoom.create(roomMaker, guestPostId);
         newRoom.addMembers(roomMaker, guest);
 
         chatRoomRepository.save(newRoom);
@@ -118,4 +119,25 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return new OpponentInfoDto(opponentNickname, identity);
     }
 
+
+    @Override
+    public ChatRoomIdToPostIdDto getPostIdByChatRoomId(String roomId) {
+
+        ChatRoom room = chatRoomRepository.findById(roomId)
+                .orElseThrow(() -> new BaseException(
+                        ErrorStatus.NOT_FOUND_CHATROOM.getHttpStatus(),
+                        ErrorStatus.NOT_FOUND_CHATROOM.getMessage()
+                ));
+
+        Long postId = room.getGuestPostId();
+
+        if (postId == null) {
+            throw new BaseException(
+                    ErrorStatus.NOT_FOUND_RELATED_POST.getHttpStatus(),
+                    ErrorStatus.NOT_FOUND_RELATED_POST.getMessage()
+            );
+        }
+
+        return new ChatRoomIdToPostIdDto(postId);
+    }
 }

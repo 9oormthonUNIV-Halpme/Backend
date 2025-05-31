@@ -73,6 +73,7 @@ public class PostService {
                 .toList();
     }
 
+    // 봉사 참여
     @Transactional
     public void participateAsVolunteer(Long postId, String volunteerEmail) {
         Post post = postRepository.findById(postId)

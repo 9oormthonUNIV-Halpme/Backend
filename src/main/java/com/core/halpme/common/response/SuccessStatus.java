@@ -34,6 +34,7 @@ public enum SuccessStatus {
     RANK_GET_SUCCESS(HttpStatus.OK, "Top 10 랭킹 조회 성공"),
     MEMBER_UPDATE_SUCCESS(HttpStatus.OK, "회원정보 수정 성공"),
     CHAT_OPPONENT_NICKNAME_SUCCESS(HttpStatus.OK, "상대방 닉네임 조회 성공"),
+    POST_ID_GET_SUCCESS(HttpStatus.OK, "PostId 조회 성공"),
   
     /**
      * 201 CREATED
