@@ -70,7 +70,7 @@ public class Post extends BaseTimeEntity {
     }
     
     // 봉사자를 봉사 참여글과 매핑
-    // 이미 배정되었다면 예외 발생, 그렇지 않다면 봉사자를 할당하며 상태를 완료로 변경
+    // 이미 배정되었다면 예외 발생, 그렇지 않다면 봉사자를 할당하며 상태를 "인증하기"로 변경
     public void assignVolunteer(Member volunteer) {
 
         if (this.volunteer != null) {
@@ -78,7 +78,7 @@ public class Post extends BaseTimeEntity {
         }
 
         this.volunteer = volunteer;
-        this.postStatus = PostStatus.COMPLETED;
+        this.postStatus = PostStatus.AUTHENTICATED;
     }
 
     public void updateTitle(String title) {

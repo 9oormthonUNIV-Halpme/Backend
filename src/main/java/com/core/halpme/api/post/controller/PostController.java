@@ -65,7 +65,7 @@ public class PostController {
 
     @Operation(
             summary = "봉사 신청에 대해 참여자로 참여",
-            description = "특정 봉사 신청에 대해 현재 멤버를 참여자로 지정합니다."
+            description = "특정 봉사 신청에 대해 현재 멤버를 참여자로 지정합니다. PostStatus = AUTHENTICATED 로 변경."
     )
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "봉사 참여자로 등록 성공"),
@@ -88,7 +88,7 @@ public class PostController {
 
     @Operation(
             summary = "봉사글 인증",
-            description = "작성자가 봉사글을 인증 완료 상태로 변경"
+            description = "작성자가 봉사글을 인증 완료 상태로 변경. PostStatus = COMPLETED 로 변경."
     )
     @PostMapping("/{postId}/authenticate")
     public ResponseEntity<ApiResponse<Void>> authenticatePost(@PathVariable Long postId) {

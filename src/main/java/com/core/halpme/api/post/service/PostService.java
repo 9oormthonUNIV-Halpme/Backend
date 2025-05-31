@@ -98,8 +98,8 @@ public class PostService {
             throw new UnauthorizedException(ErrorStatus.BAD_REQUEST_POST_WRITER_NOT_SAME_USER.getMessage());
         }
 
-        //상태 변경
-        post.updateActivityStatus(PostStatus.AUTHENTICATED);
+        // 봉사 요청글의 상태를 "완료"로 변경
+        post.updateActivityStatus(PostStatus.COMPLETED);
 
         //봉사자 존재 여부 확인 후 Rank 업데이트
         if(post.getVolunteer() != null) {
