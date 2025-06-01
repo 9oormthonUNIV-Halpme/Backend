@@ -113,10 +113,18 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 .findFirst()
                 .orElse("알 수 없음");
 
+        String opponentEmail = room.getChatRoomMembers().stream()
+                .filter(member -> !member.getEmail().equals(currentUserEmail))
+                .map(Member::getEmail)
+                .findFirst()
+                .orElseThrow(() -> new BaseException(
+                        ErrorStatus.NOT_FOUND_USER.getHttpStatus(),
+                        ErrorStatus.NOT_FOUND_USER.getMessage()
+                ));
 
         String identity = room.getRoomMaker().getEmail().equals(currentUserEmail) ? "봉사참여" : "도움요청";
 
-        return new OpponentInfoDto(opponentNickname, identity);
+        return new OpponentInfoDto(opponentNickname, identity,opponentEmail);
     }
 
 
