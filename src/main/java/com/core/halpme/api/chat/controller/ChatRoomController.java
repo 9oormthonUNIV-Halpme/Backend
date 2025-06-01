@@ -50,18 +50,26 @@ public class ChatRoomController {
         String myEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         List<ChatMessage> messages = chatMessageService.getMessagesByRoomId(roomId);
 
+        //채팅방 멤버 중 상대방 이메일 찾기
+        String opponentEmail = chatRoomService.getChatOpponentInfo(roomId, myEmail).getOpponentEmail();
+
         List<ChatMessageDto> response = messages.stream()
                 .map(msg -> {
-                    boolean isRead = messageReadStatusRepository
-                            .findByMessageIdAndReaderEmail(msg.getId(), myEmail)
+                    // 내가 보낸 메시지면 -> 상대방이 읽었는지 확인
+                    boolean isReadByOpponent = msg.getSender().equals(myEmail)
+                            ? messageReadStatusRepository
+                            .findByMessageIdAndReaderEmail(msg.getId(), opponentEmail)
                             .map(MessageReadStatus::isRead)
-                            .orElse(false);
-                    return ChatMessageDto.fromEntity(msg, isRead);
+                            .orElse(false)
+                            : true; // 상대방이 보낸 메시지면 항상 읽은 것으로 간주
+
+                    return ChatMessageDto.fromEntity(msg, isReadByOpponent);
                 })
                 .collect(Collectors.toList());
 
         return ApiResponse.success(SuccessStatus.CHAT_MESSAGES_GET_SUCCESS, response);
     }
+
 
     @GetMapping("/rooms")
     @Operation(summary = "사용자의 채팅방 목록 보기", description = "인증 토큰 필요")

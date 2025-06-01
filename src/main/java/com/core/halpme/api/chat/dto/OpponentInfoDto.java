@@ -8,4 +8,5 @@ import lombok.Data;
 public class OpponentInfoDto {
     private String opponentNickname;
     private String identity;
+    private String opponentEmail;
 }
