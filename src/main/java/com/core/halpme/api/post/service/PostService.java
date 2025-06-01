@@ -76,6 +76,7 @@ public class PostService {
     // 봉사 참여
     @Transactional
     public void participateAsVolunteer(Long postId, String volunteerEmail) {
+
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException(ErrorStatus.NOT_FOUND_RESOURCE.getMessage()));
 

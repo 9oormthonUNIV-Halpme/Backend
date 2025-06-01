@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/vi/rank")
+@RequestMapping("/api/v1/rank")
 @RequiredArgsConstructor
 public class RankController {
     private final RankService rankService;

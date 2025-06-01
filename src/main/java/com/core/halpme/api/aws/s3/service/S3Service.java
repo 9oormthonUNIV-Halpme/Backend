@@ -55,7 +55,7 @@ public class S3Service {
             // 파일명: {원파일이름}_{currentDateTime}.{확장자}
             String fileName = originalFilename + "_" + currentDateTime + extension;
 
-            // 파일경로: post-images/{memberEmailPrefix}/{랜덤문자(16자리)/파일명
+            // 파일경로: chat-images/{memberEmailPrefix}/{랜덤문자(16자리)/파일명
             String fileKey = dir + "/" + memberIdentifier + "/" + randomString + "/" + fileName;
 
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
@@ -65,7 +65,7 @@ public class S3Service {
 
             s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 
-            imageUrls.add(domain + "/" + bucketName + "/" + fileKey);
+            imageUrls.add(domain + "/" + fileKey);
         }
 
         return imageUrls;
