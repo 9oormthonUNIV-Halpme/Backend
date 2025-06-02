@@ -92,10 +92,11 @@ public class PostController {
     )
     @PostMapping("/{postId}/authenticate")
     public ResponseEntity<ApiResponse<Void>> authenticatePost(@PathVariable Long postId) {
+
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         postService.authenticatePost(postId, email);
 
-        return ApiResponse.successOnly(SuccessStatus.ARTICLE_UPDATE_SUCCESS);
+        return ApiResponse.successOnly(SuccessStatus.POST_AUTHENTICATE_SUCCESS);
     }
 
     @Operation(

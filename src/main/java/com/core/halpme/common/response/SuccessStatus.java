@@ -35,6 +35,7 @@ public enum SuccessStatus {
     MEMBER_UPDATE_SUCCESS(HttpStatus.OK, "회원정보 수정 성공"),
     CHAT_OPPONENT_NICKNAME_SUCCESS(HttpStatus.OK, "상대방 닉네임 조회 성공"),
     POST_ID_GET_SUCCESS(HttpStatus.OK, "PostId 조회 성공"),
+    POST_AUTHENTICATE_SUCCESS(HttpStatus.OK, "봉사 요청글 인증 성공"),
   
     /**
      * 201 CREATED
