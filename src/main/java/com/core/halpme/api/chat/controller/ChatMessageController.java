@@ -117,6 +117,52 @@ public class ChatMessageController {
         log.info("총 {}개의 메시지를 읽음 처리했습니다.", unreadStatuses.size());
     }
 
+    @MessageMapping("/read-room")
+    public void markRoomAsRead(@Payload String roomId, Message<?> rawMessage) {
+        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(rawMessage);
+        Principal principal = accessor.getUser();
+
+        if (principal == null) {
+            Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
+            if (sessionAttributes != null) {
+                Object sessionUser = sessionAttributes.get("user");
+                if (sessionUser instanceof Principal p) {
+                    principal = p;
+                }
+            }
+        }
+
+        if (principal == null) {
+            log.warn("읽음 처리 실패 (/read-room): principal이 null입니다.");
+            return;
+        }
+
+        String readerEmail = principal.getName();
+
+        // 안 읽은 메시지 중 가장 마지막 메시지 ID 찾기
+        List<MessageReadStatus> unreadList =
+                messageReadStatusRepository.findAllUnreadByReaderEmailAndRoomId(readerEmail, roomId);
+
+        if (unreadList.isEmpty()) {
+            log.info("읽을 메시지가 없습니다. (/read-room)");
+            return;
+        }
+
+        for (MessageReadStatus status : unreadList) {
+            status.setRead(true);
+        }
+
+        messageReadStatusRepository.saveAll(unreadList);
+
+        messagingTemplate.convertAndSend(
+                "/sub/channel/" + roomId + "/read-status",
+                new ReadStatusMessage(readerEmail, unreadList.stream()
+                        .map(status -> status.getMessage().getId())
+                        .toList())
+        );
+
+        log.info("총 {}개의 메시지를 읽음 처리했습니다. (/read-room)", unreadList.size());
+    }
 
 
 
