@@ -25,6 +25,12 @@ public class Rank extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private RankLevel rankLevel;
 
+    public Rank(Member member) {
+        this.member = member;
+        this.totalVolunteerHours = 0;
+        this.rankLevel = RankLevel.SEED_HELPER;
+    }
+
     // 봉사 기록 갱신 - 봉사시간 추가
     public void updateVolunteerRecord(int additionalHours) {
         this.totalVolunteerHours += additionalHours;

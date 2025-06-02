@@ -8,6 +8,8 @@ import com.core.halpme.api.members.entity.Member;
 import com.core.halpme.api.members.jwt.JwtTokenProvider;
 import com.core.halpme.api.members.repository.MemberRepository;
 import com.core.halpme.api.post.repository.PostRepository;
+import com.core.halpme.api.rank.entity.Rank;
+import com.core.halpme.api.rank.repository.RankRepository;
 import com.core.halpme.common.exception.BaseException;
 import com.core.halpme.common.exception.NotFoundException;
 import com.core.halpme.common.exception.UnauthorizedException;
@@ -29,6 +31,7 @@ public class MemberService {
     private final PostRepository postRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RankRepository rankRepository;
 
     @Transactional
     public void signupMember(SignupRequestDto request) {
@@ -44,8 +47,15 @@ public class MemberService {
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         Member member = request.toEntity(encodedPassword);
-
+        
+        // Member 저장 - id 생성
         memberRepository.save(member);
+
+        // Rank 생성 및 Member 와 매핑
+        Rank rank = new Rank(member);
+
+        // Rank 저장
+        rankRepository.save(rank);
     }
 
     @Transactional(readOnly = true)
