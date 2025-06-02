@@ -29,7 +29,7 @@ public class ChatMessageDto {
     private List<String> imageUrls;
     private MessageType messageType;
     private LocalDateTime createdAt;
-    private Boolean readStatus;
+    private Boolean ReadStatus;
 
 
     /* Dto -> Entity */
@@ -58,7 +58,7 @@ public class ChatMessageDto {
                 .imageUrls(imageUrls)
                 .messageType(chatMessage.getMessageType())
                 .createdAt(chatMessage.getCreatedAt())
-                .readStatus(isRead)
+                .ReadStatus(isRead)
                 .build();
     }
 }
