@@ -8,6 +8,7 @@ import com.core.halpme.api.chat.entity.MessageReadStatus;
 import com.core.halpme.api.chat.repository.ChatMessageRepository;
 import com.core.halpme.api.chat.repository.MessageReadStatusRepository;
 import com.core.halpme.api.chat.service.ChatMessageService;
+import com.core.halpme.api.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
@@ -31,6 +32,7 @@ public class ChatMessageController {
     private final SimpMessagingTemplate messagingTemplate;
     private final MessageReadStatusRepository messageReadStatusRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final ChatRoomService chatRoomService;
 
     @MessageMapping("/message")
     public void sendMessage(@Payload ChatMessageDto message, Message<?> rawMessage, Principal principal) {
@@ -56,10 +58,19 @@ public class ChatMessageController {
         message.setSender(senderEmail);
 
         ChatMessage saved = chatMessageService.createChatMessage(message);
+        // 상대방 이메일 조회
+        String roomId = message.getRoomId();
+        String opponentEmail = chatRoomService.getChatOpponentInfo(roomId, senderEmail).getOpponentEmail();
+
+        // 상대방이 해당 메시지를 읽었는지 확인
+        boolean isRead = messageReadStatusRepository
+                .findByMessageIdAndReaderEmail(saved.getId(), opponentEmail)
+                .map(MessageReadStatus::isRead)
+                .orElse(false);
 
         messagingTemplate.convertAndSend(
-                "/sub/channel/" + message.getRoomId(),
-                ChatMessageDto.fromEntity(saved, true)
+                "/sub/channel/" + roomId,
+                ChatMessageDto.fromEntity(saved, isRead)
         );
     }
 
