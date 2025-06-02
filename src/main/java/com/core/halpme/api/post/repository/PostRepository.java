@@ -15,5 +15,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     void deleteAllByMember(Member member);
 
-    List<Post> findByVolunteerEmailAndPostStatusOrderByRequestDateDesc(String email, PostStatus postStatus);
+    List<Post> findByVolunteerEmailAndPostStatusInOrderByRequestDateDesc(String email, List<PostStatus> statuses);
 }

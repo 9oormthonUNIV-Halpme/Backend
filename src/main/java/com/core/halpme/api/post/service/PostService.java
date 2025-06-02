@@ -66,7 +66,9 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<MyVolunteerPostListResponseDto> getMyVolunteerPosts(String email) {
 
-        List<Post> myPosts = postRepository.findByVolunteerEmailAndPostStatusOrderByRequestDateDesc(email, PostStatus.COMPLETED);
+        List<PostStatus> statuses = List.of(PostStatus.COMPLETED, PostStatus.AUTHENTICATED);
+
+        List<Post> myPosts = postRepository.findByVolunteerEmailAndPostStatusInOrderByRequestDateDesc(email, statuses);
 
         return myPosts.stream()
                 .map(MyVolunteerPostListResponseDto::toDto)
