@@ -26,5 +26,12 @@ public interface MessageReadStatusRepository extends JpaRepository<MessageReadSt
             @Param("messageId") Long messageId
     );
 
+    // MessageReadStatusRepository.java
+    @Query("SELECT m FROM MessageReadStatus m " +
+            "WHERE m.readerEmail = :readerEmail " +
+            "AND m.message.roomId = :roomId " +
+            "AND m.isRead = false")
+    List<MessageReadStatus> findAllUnreadByReaderEmailAndRoomId(@Param("readerEmail") String readerEmail,
+                                                                @Param("roomId") String roomId);
 
 }
