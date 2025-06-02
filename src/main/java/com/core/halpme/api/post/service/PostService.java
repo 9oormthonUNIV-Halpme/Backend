@@ -46,6 +46,7 @@ public class PostService {
                 .endHour(request.getEndHour())
                 .address(address)
                 .member(member)
+                .postStatus(PostStatus.WAITING)
                 .build();
 
         postRepository.save(post);
@@ -102,9 +103,6 @@ public class PostService {
             throw new UnauthorizedException(ErrorStatus.BAD_REQUEST_POST_WRITER_NOT_SAME_USER.getMessage());
         }
 
-        // 봉사 요청글의 상태를 "완료"로 변경
-        post.updateActivityStatus(PostStatus.COMPLETED);
-
         //봉사자 존재 여부 확인 후 Rank 업데이트
         if(post.getVolunteer() != null) {
             int volunteerHours = post.calculateVolunteerHours();
@@ -113,6 +111,9 @@ public class PostService {
         else {
             throw new NotFoundException(ErrorStatus.NOT_FOUND_VOLUNTEER.getMessage());
         }
+
+        // 봉사 요청글의 상태를 "완료"로 변경
+        post.updateActivityStatus(PostStatus.COMPLETED);
     }
 
     // 전체 봉사 신청글 조회
