@@ -65,7 +65,8 @@ public class ChatMessageServiceImpl implements ChatMessageService{
             );
         }
 
-        return saved;
+        return chatMessageRepository.findById(saved.getId())
+                .orElseThrow(() -> new RuntimeException("메시지 재조회 실패"));
     }
 
     public List<ChatMessage> getMessagesByRoomId(String roomId) {
